@@ -21,7 +21,7 @@ class MqttClient(mqtt.Client):
     def on_message(self, userdata, rc):
         pass
 
-    def publish_discovery_topics(self, server, mqtt_client):
+    def publish_discovery_topics(self, server):
         # from uxr_charger app
         # server.model = "test"
         # server.serialnum = "asdf1234"

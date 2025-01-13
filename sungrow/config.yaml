@@ -34,7 +34,7 @@ options:
       connected_client: "Client1"
       device_addr: 999
   connection_specs:
-    SunGrow_Inverter:
+    - name: "Sungrow_Inverter"
       connection_method: "RTU"
       baudrate: 9600
       bytesize: 8
@@ -62,7 +62,7 @@ schema:
       connected_client: str
       device_addr: int
   connection_specs:
-    SunGrow_Inverter:
+    - name: str
       connection_method: str
       baudrate: int
       bytesize: int
