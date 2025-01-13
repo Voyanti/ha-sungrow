@@ -3,61 +3,58 @@ version: "0.1.0"
 slug: "sungrow"
 description: "Sungrow Inverter Addon"
 init: false
-startup: application    # check
+startup: application
 boot: auto
-url: "https://github.com/heinrich321/voyanti-sungrow/""
+url: "https://github.com/heinrich321/voyanti-sungrow/"
 arch:
   - aarch64
   - amd64
   - armhf
   - armv7
   - i386
-
 options:
   mqtt:
-    - host: "10.0.0.132"
-      port: 1883
-      user: "mqtt-users"
-      password: "mqtt-users"
-      ha_discovery: true
-      ha_discovery_topic: "homeassistant"
-      base_topic: "modbus"
-      # read_delay: ""
+    host: "10.0.0.132"
+    port: 1883
+    user: "mqtt-users"
+    password: "mqtt-users"
+    ha_discovery: true
+    ha_discovery_topic: "homeassistant"
+    base_topic: "modbus"
   clients:
     - name: "usb_to_modbus"
       nickname: "Client1"
-      connection_specs: "SunGrow Inverter"      # selects 8N1 and 9600 baud
-      port: "dev/tty1"
-  servers: 
+      connection_specs: "SunGrow_Inverter"
+      port: "/dev/tty1"
+  servers:
     - name: "SunGrow Inverter 1"
       nickname: "SG1"
       serialnum: "12345678"
       server_type: "SunGrow Inverter"
       connected_client: "Client1"
       device_addr: 999
-      # read all registers for now. invalid registers are Uint/Int_Max
   connection_specs:
-    SunGrow Inverter:
-      - connection_method: "RTU"
-        baudrate: 9600
-        bytesize: 8
-        parity: false
-        stopbits: 1
+    SunGrow_Inverter:
+      connection_method: "RTU"
+      baudrate: 9600
+      bytesize: 8
+      parity: false
+      stopbits: 1
 schema:
   mqtt:
-    - host: str
-      port: int
-      user: str
-      password: str
-      ha_discovery: bool
-      ha_discovery_topic: str
-      base_topic: str
+    host: str
+    port: int
+    user: str
+    password: str
+    ha_discovery: bool
+    ha_discovery_topic: str
+    base_topic: str
   clients:
     - name: str
       nickname: str
       connection_specs: str
       port: str
-  servers: 
+  servers:
     - name: str
       nickname: str
       serialnum: str
@@ -65,10 +62,9 @@ schema:
       connected_client: str
       device_addr: int
   connection_specs:
-    SunGrow Inverter:
-      - connection_method: str
-        baudrate: int
-        bytesize: int
-        parity: bool
-        stopbits: int
-
+    SunGrow_Inverter:
+      connection_method: str
+      baudrate: int
+      bytesize: int
+      parity: bool
+      stopbits: int
