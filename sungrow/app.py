@@ -3,7 +3,7 @@ import atexit
 import logging
 
 from modbus_mqtt import MqttClient
-from config_loader import ConfigLoader
+from loader import ConfigLoader
 from client import ModbusRtuClient as Client
 from server import Server
 from sungrow_inverter import SungrowInverter
