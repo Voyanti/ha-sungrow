@@ -1,7 +1,7 @@
 name: "Sungrow Inverter Addon"
 version: "0.1.0"
 slug: "sungrow_inverter"
-description: ""
+description: "Sungrow Inverter Addon"
 init: false
 startup: application    # check
 boot: auto
