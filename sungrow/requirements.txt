@@ -1,5 +1,4 @@
-msgpack==1.1.0
-packaging==24.2
+paho-mqtt==2.1.0
 pymodbus==3.8.3
-typing_extensions==4.12.2
-wrapt==1.17.0
+pyserial==3.5
+PyYAML==6.0.2
