@@ -57,7 +57,7 @@ try:
 
     # Setup MQTT Client
     mqtt_client = MqttClient(mqtt_cfg)
-    mqtt_client.connect(host=mqtt_cfg["host"], password=mqtt_cfg["password"])
+    mqtt_client.connect(host=mqtt_cfg["host"], port=mqtt_cfg["port"])
     mqtt_client.loop_start()
     
     # Publish Discovery Topics
