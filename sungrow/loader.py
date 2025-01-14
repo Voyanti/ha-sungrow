@@ -14,30 +14,18 @@ class ConfigLoader:
         if os.path.exists(json_rel_path):
             with open(json_rel_path) as f:
                 data = json.load(f)
+        elif os.path.exists('data/config.yaml'):
+            logging.info("Loading config.yaml")
+            with open(r'data/config.yaml') as file:
+                data = yaml.load(file, Loader=yaml.FullLoader)['options']
         else:
             raise FileNotFoundError(f"Config options json not found.")
 
         cls.validate(data)
-        logger.info("Successfully read configuration json")
+        logger.info("Successfully read configuration")
 
         return data["servers"], data["clients"], data["connection_specs"], data["mqtt"]
 
     @staticmethod
     def validate(data):
         pass
-
-# Option schema example
-# {'clients': [{'name': 'usb_to_modbus',
-#     'nickname': 'Client1',
-#     'connection_specs': 'SunGrow Inverter',
-#     'port': 'dev/tty1'}],
-#   'servers': [{'name': 'SunGrow Inverter 1',
-#     'nickname': 'SG1',
-#     'serialnum': '12345678',
-#     'server_type': 'SunGrow Inverter',
-#     'connected_client': 'Client1'}],
-#   'connection_specs': {'SunGrow Inverter': {'connection_method': 'RTU',
-#     'baudrate': 9600,
-#     'bytesize': 8,
-#     'parity': False,
-#     'stopbits': 1}}}
