@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 class ConfigLoader:
    
     @staticmethod
-    def load(json_rel_path="data/options.json") -> tuple[dict, dict]:
+    def load(json_rel_path="/data/options.json") -> tuple[dict, dict]:
         """ Load server, client configurations and connection specs as dicts from options json. """
 
         logger.info("Attempting to read configuration json")
