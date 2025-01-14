@@ -39,9 +39,10 @@ class ModbusRtuClient:
         if result.isError():
             raise Exception(f"Error reading register {register_name}")
 
-        return server._decoded(result.registers, dtype)
-        return _decoded(result.registers)*multiplier
-        # TODO multiplier
+        val = server._decoded(result.registers, dtype)
+
+        if multiplier != 1: val*=multiplier
+        return val
 
     def write_register(self, val, is_float:bool, server:Server, register_name: str, register_info:dict):
         """ Write to an individual register using pymodbus.
@@ -101,10 +102,12 @@ class SpoofClient(ModbusRtuClient):
 
         # if result.isError():
         #     raise Exception(f"Error reading register {register_name}")
-        logger.info("return spoof register value U16")
-        return server._decoded([258,], dtype="U16")
-        # return _decoded(result.registers)*multiplier
-        # TODO multiplier
+        # logger.info("return spoof register value U16")
+
+        val = server._decoded( [258], dtype="U16")
+
+        if multiplier != 1: val*=multiplier
+        return val
 
     def write_register(self, val, is_float:bool, server:Server, register_name: str, register_info:dict):
         """ Write to an individual register using pymodbus.

@@ -18,6 +18,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 mqtt_client = None
+read_interval = 2
 
 
 def exit_handler(servers, modbus_clients, mqtt_client):             # TODO check argument passing
@@ -68,13 +69,13 @@ try:
     # every read_interval seconds, read the registers and publish to mqtt
     while True:
         for server in servers:
-            for register, details in server.registers.items():
+            for register_name, details in server.registers.items():
                 client = server.connected_client
-                value = client.read_register(server, register, details)
-                mqtt_client.publish(register, value)
+                value = client.read_registers(server, register_name, details)
+                mqtt_client.publish_to_ha(register_name, value, server)
 
         # publish availability
 
-        sleep(config.read_interval)
+        sleep(read_interval)
 finally:
     exit_handler(servers, clients, mqtt_client)

@@ -22,16 +22,21 @@ class MqttClient(mqtt.Client):
         self.username_pw_set(mqtt_cfg["user"], mqtt_cfg["password"])
         self.mqtt_cfg = mqtt_cfg
 
-    def on_connect(self, userdata, flags, rc):
-        logger.info("Connected to MQTT broker")
-        # subscribe to set topics (get from server implementation)
+        def on_connect(client, userdata, connect_flags, reason_code, properties):
+            if reason_code == 0:
+                logger.info(f"Connected to MQTT broker.")
+            else:
+                logger.info(f"Not connected to MQTT broker.\nReturn code: {rc=}")
 
-    def on_disconnect(self, userdata, rc):
-        logger.info("Disconnected from MQTT broker")
-        pass
+        def on_disconnect(client, userdata, message):
+            logger.info("Disconnected from MQTT broker")
 
-    def on_message(self, userdata, rc):
-        pass
+        def on_message(client, userdata, message):
+            logger.info("Received message on MQTT")
+
+        self.on_connect = on_connect
+        self.on_disconnect = on_disconnect
+        self.on_message = on_message
 
     def publish_discovery_topics(self, server):
         # from uxr_charger app
@@ -45,21 +50,30 @@ class MqttClient(mqtt.Client):
             "name": f"{server.manufacturer} {server.serialnum}"
         }
 
+        availability_topic = f"{self.mqtt_cfg['base_topic']}_{server.manufacturer}_{server.serialnum}/availability"
+
         # publish discovery topics for legal registers
         # assume registers in server.registers
 
         # from uxr_charger app
-        for register_name, details in server.valid_read_registers:
+        for register_name, details in server.registers.items():
             discovery_payload = {
                     "name": register_name,
-                    "unique_id": f"uxr_{server.serialnum}_{register_name.replace(' ', '_').lower()}",
-                    "state_topic": f"{mqtt_cfg['base_topic']}/{server.serialnum}/{register_name.replace(' ', '_').lower()}",
+                    "unique_id": f"{server.manufacturer}_{server.serialnum}_{register_name.replace(' ', '_').lower()}",
+                    "state_topic": f"{self.mqtt_cfg['base_topic']}/{server.serialnum}/{register_name.replace(' ', '_').lower()}",
                     "availability_topic": availability_topic,
                     "device": device,
                     "device_class": details["device_class"],
                     "unit_of_measurement": details["unit"],
                 }
-            discovery_topic = f"{mqtt_cfg['ha_discovery_topic']}/sensor/{server.manufacturer.lower()}_{server.serialnum}/{registername.replace(' ', '_').lower()}/config"
-            server.connected_client.publish(discovery_topic, json.dumps(discovery_payload), retain=True)
+            discovery_topic = f"{self.mqtt_cfg['ha_discovery_topic']}/sensor/{server.manufacturer.lower()}_{server.serialnum}/{register_name.replace(' ', '_').replace('(', '').replace(')', '').lower()}/config"
+            self.publish(discovery_topic, json.dumps(discovery_payload), retain=True)
 
+        self.publish(availability_topic, "online", retain=True)
         # TODO incomplete
+
+    def publish_to_ha(self, register_name, value, server):
+        self.publish(f"{self.mqtt_cfg['base_topic']}/{server.serialnum}/{register_name.replace(' ', '_').replace('(', '').replace(')', '').lower()}", value) #, retain=True)
+        # availability_topic = f"{self.mqtt_cfg['base_topic']}_{server.manufacturer}_{server.serialnum}/availability"
+
+        # self.publish(availability_topic, "online")

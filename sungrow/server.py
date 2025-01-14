@@ -7,8 +7,8 @@ class Server(metaclass=abc.ABCMeta):
         self.nickname: str = nickname
         self.serialnum: str = serialnum
         self.connected_client = connected_client
-        self.registers: list = []
-        self.manufacturer:str | None = None
+        # self.registers: dict = {}
+        # self.manufacturer:str | None = None
         self.model:str | None = None
         self.device_addr:int| None = None
         # self.batches TODO
@@ -38,13 +38,15 @@ class Server(metaclass=abc.ABCMeta):
 
         return cls(server_cfg["name"], server_cfg["nickname"], server_cfg["serialnum"], server_cfg['device_addr'], connected_client=clients[idx])
         # return Server(server_cfg["name"], server_cfg["nickname"], server_cfg["serialnum"], server_cfg['device_addr'], connected_client=clients[idx])
-
+    
+    @classmethod
     @abc.abstractmethod
-    def _decoded(content):
+    def _decoded(cls, content, dtype):
         "Server-specific decoding must be implemented."
         pass
 
+    @classmethod
     @abc.abstractmethod
-    def _encoded(content):
+    def _encoded(cls, content):
         "Server-specific encoding must be implemented."
         pass

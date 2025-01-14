@@ -1,5 +1,5 @@
 name: "Sungrow Inverter Addon"
-version: "0.1.15"
+version: "0.1.16"
 slug: "sungrow"
 description: "Sungrow Inverter Addon"
 init: false
@@ -14,7 +14,7 @@ arch:
   - i386
 options:
   mqtt:
-    host: "localhost"
+    host: "10.0.0.1"
     port: 1883
     user: "mqtt"
     password: "mqtt"
