@@ -64,7 +64,11 @@ class ModbusRtuClient:
         self.client.close()
 
     def from_config(client_cfg: dict, connection_specs: dict):
-        conection_cfg = connection_specs[client_cfg["connection_specs"]]
+        try:
+            idx = [c['name'] for c in conection_specs].index(client_cfg["connection_specs"])  # TODO ugly
+        except:
+            raise ValueError(f"Connection config {client_cfg['connection_specs']} for client {client_cfg['nickname']} not defined in options.")
+
         
         return ModbusRtuClient(client_cfg["name"], client_cfg["nickname"], client_cfg["port"], 
                             connection_cfg["baudrate"], connection_cfg["bytesize"], 
