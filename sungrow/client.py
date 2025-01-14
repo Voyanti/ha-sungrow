@@ -15,9 +15,9 @@ class ModbusRtuClient:
     def __init__(self, name:str, nickname:str, port:int, baudrate:int, bytesize:int=8, parity:bool=False, stopbits:int=1, timeout:int=1):
         self.name = name
         self.nickname = nickname
-        self.client = ModbusSerialClient(   port=port, baudrate=baudrate, 
-                                            bytesize=bytesize, parity='Y' if parity else 'N', stopbits=stopbits, 
-                                            timeout=timeout)
+        # self.client = ModbusSerialClient(   port=port, baudrate=baudrate, 
+        #                                     bytesize=bytesize, parity='Y' if parity else 'N', stopbits=stopbits, 
+        #                                     timeout=timeout)
 
 
     def read_registers(self, server:Server, register_name:str, register_info:dict):
