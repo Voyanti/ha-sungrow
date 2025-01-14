@@ -24,8 +24,8 @@ read_interval = 2
 def exit_handler(servers, modbus_clients, mqtt_client):             # TODO check argument passing
     logger.info("Exiting")
     # publish offline availability for each server
-    # for server in servers:
-        # mqtt_client.publish(f"{}")                  #
+    for server in servers:
+        mqtt_client.publish_availability(False, server)
     logger.info("Closing client connections on exit")
     for client in modbus_clients:
         client.close()

@@ -5,6 +5,8 @@ import struct
 import logging
 logger = logging.getLogger(__name__)
 
+from time import time
+
 from server import Server
 
 DEBUG = True
@@ -104,10 +106,10 @@ class SpoofClient(ModbusRtuClient):
         #     raise Exception(f"Error reading register {register_name}")
         # logger.info("return spoof register value U16")
 
-        val = server._decoded( [258], dtype="U16")
+        val = server._decoded( [int(int(time())%2**16)], dtype="U16")
 
         if multiplier != 1: val*=multiplier
-        return val
+        return round(val, 4)
 
     def write_register(self, val, is_float:bool, server:Server, register_name: str, register_info:dict):
         """ Write to an individual register using pymodbus.

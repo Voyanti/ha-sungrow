@@ -8,7 +8,7 @@ from time import time
 logger = logging.getLogger(__name__)
 
 def slugify(text):
-    return text.replace(' ', '_').replace('(', '').replace(')', '').lower()
+    return text.replace(' ', '_').replace('(', '').replace(')', '').replace('/', 'OR').lower()
 
 class MqttClient(mqtt.Client):
     def __init__(self, mqtt_cfg):
@@ -53,11 +53,10 @@ class MqttClient(mqtt.Client):
             "name": f"{server.manufacturer} {server.serialnum}"
         }
 
-        availability_topic = f"{self.mqtt_cfg['base_topic']}_{server.manufacturer}_{server.serialnum}/availability"
 
         # publish discovery topics for legal registers
         # assume registers in server.registers
-
+        availability_topic = f"{self.mqtt_cfg['base_topic']}_{server.manufacturer}_{server.serialnum}/availability"
         # from uxr_charger app
         for register_name, details in server.registers.items():
             discovery_payload = {
@@ -72,7 +71,7 @@ class MqttClient(mqtt.Client):
             discovery_topic = f"{self.mqtt_cfg['ha_discovery_topic']}/sensor/{server.manufacturer.lower()}_{server.serialnum}/{slugify(register_name)}/config"
             self.publish(discovery_topic, json.dumps(discovery_payload), retain=True)
 
-        self.publish(availability_topic, "online", retain=True)
+        self.publish_availability(True, server)
         # TODO incomplete
 
     def publish_to_ha(self, register_name, value, server):
@@ -80,3 +79,7 @@ class MqttClient(mqtt.Client):
         # availability_topic = f"{self.mqtt_cfg['base_topic']}_{server.manufacturer}_{server.serialnum}/availability"
 
         # self.publish(availability_topic, "online")
+
+    def publish_availability(self, avail, server):
+        availability_topic = f"{self.mqtt_cfg['base_topic']}_{server.manufacturer}_{server.serialnum}/availability"
+        self.publish(availability_topic, "online" if avail else "offline", retain=True)
