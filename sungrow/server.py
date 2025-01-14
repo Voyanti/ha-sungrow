@@ -28,14 +28,16 @@ class Server(metaclass=abc.ABCMeta):
         elif self.serialnum != serialnum_as_read: raise ValueError(f"Mismatch in configured serialnum {self.serialnum} \
                                                                         and actual serialnum {serialnum_as_read} for server {self.nickname}.")
 
-    def from_config(server_cfg:dict, clients:list):
+    @classmethod
+    def from_config(cls, server_cfg:dict, clients:list):
         # assume valid configLoader object
         try:
-            idx = [str(client) for c in clients].index(server_cfg["connected_client"])  # TODO ugly
+            idx = [str(client) for client in clients].index(server_cfg["connected_client"])  # TODO ugly
         except:
             raise ValueError(f"Client {server_cfg['connected_client']} from server {server_cfg['nickname']} config not defined in client list")
 
-        return Server(server_cfg["name"], server_cfg["nickname"], server_cfg["serialnum"], server_cfg['device_addr'], connected_client=clients[idx])
+        return cls(server_cfg["name"], server_cfg["nickname"], server_cfg["serialnum"], server_cfg['device_addr'], connected_client=clients[idx])
+        # return Server(server_cfg["name"], server_cfg["nickname"], server_cfg["serialnum"], server_cfg['device_addr'], connected_client=clients[idx])
 
     @abc.abstractmethod
     def _decoded(content):

@@ -1,5 +1,5 @@
 name: "Sungrow Inverter Addon"
-version: "0.1.7"
+version: "0.1.8"
 slug: "sungrow"
 description: "Sungrow Inverter Addon"
 init: false
@@ -24,7 +24,7 @@ options:
   clients:
     - name: "usb_to_modbus"
       nickname: "Client1"
-      connection_specs: "SunGrow_Inverter"
+      connection_specs: "Sungrow_Inverter"
       port: "/dev/tty1"
   servers:
     - name: "SunGrow Inverter 1"

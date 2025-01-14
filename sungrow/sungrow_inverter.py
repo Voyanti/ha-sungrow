@@ -514,8 +514,8 @@ class SungrowInverter(Server):
 
     # Appendix 7, 8, 9?
 
-    def __init__(self):
-        super.__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.model = "unknown"
 
     def _decoded(content, dtype):

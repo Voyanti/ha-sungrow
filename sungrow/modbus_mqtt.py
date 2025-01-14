@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 
 class MqttClient(mqtt.Client):
     def __init__(self, mqtt_cfg):
-        super.__init__(CallbackAPIVersion.VERSION2)
+        super().__init__(CallbackAPIVersion.VERSION2)
         self.username_pw_set(mqtt_cfg["user"], mqtt_cfg["password"])
         self.mqtt_cfg = mqtt_cfg
 

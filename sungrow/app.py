@@ -38,7 +38,8 @@ try:
     # Instantiate clients (modbus adapters)
     clients = [Client.from_config(client_cfg, connection_specs) for client_cfg in clients_cfgs]
     # Instantiate servers
-    servers = [SungrowInverter.from_config(server_cfg, comm) for server_cfg in servers_cfgs]
+    servers = [SungrowInverter.from_config(server_cfg, clients) for server_cfg in servers_cfgs]
+
 
     # Connect to clients
     for client in clients:

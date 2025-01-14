@@ -1,6 +1,7 @@
 import json
 import os
 import logging
+import yaml
 logger = logging.getLogger(__name__)
 
 
@@ -14,12 +15,12 @@ class ConfigLoader:
         if os.path.exists(json_rel_path):
             with open(json_rel_path) as f:
                 data = json.load(f)
-        elif os.path.exists('data/config.yaml'):
+        elif os.path.exists('config.yaml'):
             logging.info("Loading config.yaml")
-            with open(r'data/config.yaml') as file:
+            with open('config.yaml') as file:
                 data = yaml.load(file, Loader=yaml.FullLoader)['options']
         else:
-            raise FileNotFoundError(f"Config options json not found.")
+            raise FileNotFoundError(f"Config options json/yaml not found.")
 
         # cls.validate(data)
         logger.info("Successfully read configuration")
