@@ -16,7 +16,7 @@ class ModbusRtuClient:
         self.name = name
         self.nickname = nickname
         self.client = ModbusSerialClient(   port=port, baudrate=baudrate, 
-                                            bytesize=bytesize, parity=parity, stopbits=stopbits, 
+                                            bytesize=bytesize, parity='Y' if parity else 'N', stopbits=stopbits, 
                                             timeout=timeout)
 
 
