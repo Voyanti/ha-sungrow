@@ -21,7 +21,7 @@ class ConfigLoader:
         else:
             raise FileNotFoundError(f"Config options json not found.")
 
-        cls.validate(data)
+        # cls.validate(data)
         logger.info("Successfully read configuration")
 
         return data["servers"], data["clients"], data["connection_specs"], data["mqtt"]
