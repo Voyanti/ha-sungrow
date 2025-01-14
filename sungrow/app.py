@@ -63,7 +63,7 @@ try:
     
     # Publish Discovery Topics
     for server in servers:
-        mqtt_client.publish_discovery_topics()
+        mqtt_client.publish_discovery_topics(server)
 
     # every read_interval seconds, read the registers and publish to mqtt
     while True:

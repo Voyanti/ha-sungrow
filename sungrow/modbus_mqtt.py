@@ -56,8 +56,8 @@ class MqttClient(mqtt.Client):
                     "state_topic": f"{mqtt_cfg['base_topic']}/{server.serialnum}/{register_name.replace(' ', '_').lower()}",
                     "availability_topic": availability_topic,
                     "device": device,
-                    "device_class": details.get("device_class"),        # TODO add
-                    "unit_of_measurement": details.get("unit"),
+                    "device_class": details["device_class"],
+                    "unit_of_measurement": details["unit"],
                 }
             discovery_topic = f"{mqtt_cfg['ha_discovery_topic']}/sensor/{server.manufacturer.lower()}_{server.serialnum}/{registername.replace(' ', '_').lower()}/config"
             server.connected_client.publish(discovery_topic, json.dumps(discovery_payload), retain=True)
