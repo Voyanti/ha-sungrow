@@ -63,13 +63,14 @@ class ModbusRtuClient:
     def close(self):
         self.client.close()
 
-    def from_config(client_cfg: dict, connection_cfg: dict):
+    @classmethod
+    def from_config(cls, client_cfg: dict, connection_cfg: dict):
         try:
             idx = [c['name'] for c in connection_cfg].index(client_cfg["connection_specs"])  # TODO ugly
         except:
             raise ValueError(f"Connection config {client_cfg['connection_specs']} for client {client_cfg['nickname']} not defined in options.")
 
-        return ModbusRtuClient(client_cfg["name"], client_cfg["nickname"], client_cfg["port"], 
+        return cls(client_cfg["name"], client_cfg["nickname"], client_cfg["port"], 
                             connection_cfg[idx]["baudrate"], connection_cfg[idx]["bytesize"], 
                             connection_cfg[idx]["parity"], connection_cfg[idx]["stopbits"])
 
@@ -95,7 +96,7 @@ class SpoofClient(ModbusRtuClient):
 
         # if result.isError():
         #     raise Exception(f"Error reading register {register_name}")
-
+        logger.info("return spoof register value U16")
         return server._decoded([258,], dtype="U16")
         # return _decoded(result.registers)*multiplier
         # TODO multiplier
@@ -108,6 +109,7 @@ class SpoofClient(ModbusRtuClient):
         """
         # model specific write register validation
         server._validate_write_val(register_name, val)
+        logger.info("validated write val")
         
         # self.client.write_register(address=register_info["addr"],
         #                             value=server._encoded(value),
