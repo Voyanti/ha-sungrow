@@ -39,7 +39,7 @@ class ModbusRtuClient:
         if result.isError():
             raise Exception(f"Error reading register {register_name}")
 
-        return server._decoded(result.registers)
+        return server._decoded(result.registers, dtype)
         return _decoded(result.registers)*multiplier
         # TODO multiplier
 
@@ -72,3 +72,49 @@ class ModbusRtuClient:
 
     def __str__(self):
         return f"{self.nickname}"
+
+class SpoofClient(ModbusRtuClient):
+    def read_registers(self, server:Server, register_name:str, register_info:dict):
+        """ Read a group of registers using pymodbus 
+        
+            Reuires implementation of the abstract method 'Server._decoded()'
+        """
+
+        address = register_info["addr"]
+        dtype =  register_info["dtype"]
+        multiplier = register_info["multiplier"]
+        unit = register_info["unit"]
+        count = register_info["count"]
+
+        # result = self.client.read_holding_registers(address-1,
+                                                    # count=count,
+                                                    # slave=server.device_addr)
+
+        # if result.isError():
+        #     raise Exception(f"Error reading register {register_name}")
+
+        return server._decoded([258,], dtype="U16")
+        # return _decoded(result.registers)*multiplier
+        # TODO multiplier
+
+    def write_register(self, val, is_float:bool, server:Server, register_name: str, register_info:dict):
+        """ Write to an individual register using pymodbus.
+
+            Reuires implementation of the abstract methods 
+            'Server._validate_write_val()' and 'Server._encode()'
+        """
+        # model specific write register validation
+        server._validate_write_val(register_name, val)
+        
+        # self.client.write_register(address=register_info["addr"],
+        #                             value=server._encoded(value),
+        #                             slave=server.device_addr)
+        return None
+
+    def connect(self):
+        logger.info("Connect spoof")
+
+    def close(self):
+        logger.info("Disconnect spoof")
+
+

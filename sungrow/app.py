@@ -4,9 +4,11 @@ import logging
 
 from modbus_mqtt import MqttClient
 from loader import ConfigLoader
-from client import ModbusRtuClient as Client
+# from client import ModbusRtuClient as Client
 from server import Server
 from sungrow_inverter import SungrowInverter
+
+from client import SpoofClient as Client
 
 logging.basicConfig(
     level=logging.INFO,  # Set logging level
@@ -43,12 +45,12 @@ try:
         client.connect()
 
     # Connect to Servers
-    for server in Servers:
-        server.verify_serialnum()                              
+    # for server in Servers:
+        # server.verify_serialnum()                              
             
         # server.read_model()
-        modelcode = server.connected_client.read_register(server, "Device Type Code", server.registers["Device Type Code"])
-        sever.model = Server.device_info[modelcode]
+        # modelcode = server.connected_client.read_register(server, "Device Type Code", server.registers["Device Type Code"])
+        # sever.model = Server.device_info[modelcode]
         # TODO find valid registers
         # - get limits for settable params TODO
 
