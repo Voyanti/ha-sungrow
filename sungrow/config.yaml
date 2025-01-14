@@ -1,5 +1,5 @@
 name: "Sungrow Inverter Addon"
-version: "0.1.13"
+version: "0.1.14"
 slug: "sungrow"
 description: "Sungrow Inverter Addon"
 init: false
@@ -16,8 +16,8 @@ options:
   mqtt:
     host: "localhost"
     port: 1883
-    user: "mqtt-users"
-    password: "mqtt-users"
+    user: "mqtt-user"
+    password: "mqtt-user"
     ha_discovery: true
     ha_discovery_topic: "homeassistant"
     base_topic: "modbus"

@@ -2,11 +2,23 @@ import paho.mqtt.client as mqtt
 from paho.mqtt.enums import CallbackAPIVersion
 import json
 import logging
+
+from random import getrandbits
+from time import time
 logger = logging.getLogger(__name__)
 
 class MqttClient(mqtt.Client):
     def __init__(self, mqtt_cfg):
-        super().__init__(CallbackAPIVersion.VERSION2)
+        def generate_uuid():
+            random_part = getrandbits(64)
+            timestamp = int(time() * 1000)  # Get current timestamp in milliseconds
+            node = getrandbits(48)  # Simulating a network node (MAC address)
+
+            uuid_str = f'{timestamp:08x}-{random_part >> 32:04x}-{random_part & 0xFFFF:04x}-{node >> 24:04x}-{node & 0xFFFFFF:06x}'
+            return uuid_str
+            
+        uuid = generate_uuid()
+        super().__init__(CallbackAPIVersion.VERSION2, f"modbus-{uuid}")
         self.username_pw_set(mqtt_cfg["user"], mqtt_cfg["password"])
         self.mqtt_cfg = mqtt_cfg
 
