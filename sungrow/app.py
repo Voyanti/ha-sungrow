@@ -75,7 +75,7 @@ try:
                 mqtt_client.publish_to_ha(register_name, value, server)
 
         # publish availability
-
+        logger.info("Published all register values.")
         sleep(read_interval)
 finally:
     exit_handler(servers, clients, mqtt_client)

@@ -7,6 +7,9 @@ from random import getrandbits
 from time import time
 logger = logging.getLogger(__name__)
 
+def slugify(text):
+    return text.replace(' ', '_').replace('(', '').replace(')', '').lower()
+
 class MqttClient(mqtt.Client):
     def __init__(self, mqtt_cfg):
         def generate_uuid():
@@ -59,21 +62,21 @@ class MqttClient(mqtt.Client):
         for register_name, details in server.registers.items():
             discovery_payload = {
                     "name": register_name,
-                    "unique_id": f"{server.manufacturer}_{server.serialnum}_{register_name.replace(' ', '_').lower()}",
-                    "state_topic": f"{self.mqtt_cfg['base_topic']}/{server.serialnum}/{register_name.replace(' ', '_').lower()}",
+                    "unique_id": f"{server.manufacturer}_{server.serialnum}_{slugify(register_name)}",
+                    "state_topic": f"{self.mqtt_cfg['base_topic']}/{server.serialnum}/{slugify(register_name)}",
                     "availability_topic": availability_topic,
                     "device": device,
                     "device_class": details["device_class"],
                     "unit_of_measurement": details["unit"],
                 }
-            discovery_topic = f"{self.mqtt_cfg['ha_discovery_topic']}/sensor/{server.manufacturer.lower()}_{server.serialnum}/{register_name.replace(' ', '_').replace('(', '').replace(')', '').lower()}/config"
+            discovery_topic = f"{self.mqtt_cfg['ha_discovery_topic']}/sensor/{server.manufacturer.lower()}_{server.serialnum}/{slugify(register_name)}/config"
             self.publish(discovery_topic, json.dumps(discovery_payload), retain=True)
 
         self.publish(availability_topic, "online", retain=True)
         # TODO incomplete
 
     def publish_to_ha(self, register_name, value, server):
-        self.publish(f"{self.mqtt_cfg['base_topic']}/{server.serialnum}/{register_name.replace(' ', '_').replace('(', '').replace(')', '').lower()}", value) #, retain=True)
+        self.publish(f"{self.mqtt_cfg['base_topic']}/{server.serialnum}/{slugify(register_name)}", value) #, retain=True)
         # availability_topic = f"{self.mqtt_cfg['base_topic']}_{server.manufacturer}_{server.serialnum}/availability"
 
         # self.publish(availability_topic, "online")

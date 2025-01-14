@@ -574,3 +574,5 @@ class SungrowInverter(Server):
 if __name__ == "__main__":
     print(SungrowInverter._encoded(2**16-1, False))
     print(SungrowInverter._encoded(-1, False))
+
+    print(len(SungrowInverter.registers))
