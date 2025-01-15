@@ -1,5 +1,7 @@
 from loader import ConfigLoader
 import abc
+import logging
+logger = logging.getLogger(__name__)
 
 class Server(metaclass=abc.ABCMeta):
     def __init__(self, name:str, nickname:str, serialnum:str, device_addr:int, connected_client):
@@ -21,8 +23,9 @@ class Server(metaclass=abc.ABCMeta):
         ----------
             - serialnum_name_in_definition: str: Name of the register in server.registers containing the serial number
         """
-        serialnum = server.connected_client.read_registers(server, serialnum_name_in_definition, 
-                                                            server.registers[serialnum_name_in_definition])
+        logger.info("Verifying serialnumber")
+        serialnum = self.connected_client.read_registers(self, serialnum_name_in_definition, 
+                                                            self.registers[serialnum_name_in_definition])
 
         if self.serialnum is None: raise ConnectionError(f"Failed to read serialnum of {self.nickname}.")
         elif self.serialnum != serialnum_as_read: raise ValueError(f"Mismatch in configured serialnum {self.serialnum} \
