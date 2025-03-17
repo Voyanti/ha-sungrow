@@ -1,3 +1,4 @@
+from typing import Callable
 import paho.mqtt.client as mqtt
 from paho.mqtt.enums import CallbackAPIVersion
 import json
@@ -46,11 +47,13 @@ class MqttClient(mqtt.Client):
 
         def on_message(client, userdata, msg):
             logger.info("Received message on MQTT")
-            self.message_handler(msg.topic, msg.payload.decode('utf-8'), self, )
+            self.message_handler(msg.topic, msg.payload.decode('utf-8'))
 
         self.on_connect = on_connect
         self.on_disconnect = on_disconnect
         self.on_message = on_message
+
+        self.message_handler = Callable[[str, str], None]
 
     def publish_discovery_topics(self, server) -> None:
         while not self.is_connected():

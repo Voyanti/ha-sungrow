@@ -41,27 +41,32 @@ def exit_handler(
 
     mqtt_client.loop_stop()
 
-def message_handler(msg_topic: str, msg_payload_decoded: str, mqtt_client: MqttClient, servers: list[Server]) -> None:
-    """
-        Callback for writing appropriate device register when message received.
-    """
-    # command_topic = f"{self.base_topic}/{server.nickname}/{slugify(register_name)}/set"
-    server_ha_display_name: str = msg_topic.split('/')[1]
-    s = None
-    for s in servers: 
-        if s.name == server_ha_display_name:
-            server = s
-    if s is None: raise ValueError(f"Server {server_ha_display_name} not available. Cannot write.")
-    register_name: str = msg_topic.split('/')[2]
-    value: str = msg_payload_decoded 
+class MessageHandler:
+    def __init__(self, servers: list[Server], mqtt_client: MqttClient):
+        self.servers = servers
+        self.mqtt_client = mqtt_client
 
-    server.write_registers(register_name, value)
+    def decode_and_write(self, msg_topic: str, msg_payload_decoded: str) -> None:
+        """
+            Callback for writing appropriate device register when message received.
+        """
+        # command_topic = f"{self.base_topic}/{server.nickname}/{slugify(register_name)}/set"
+        server_ha_display_name: str = msg_topic.split('/')[1]
+        s = None
+        for s in self.servers: 
+            if s.name == server_ha_display_name:
+                server = s
+        if s is None: raise ValueError(f"Server {server_ha_display_name} not available. Cannot write.")
+        register_name: str = msg_topic.split('/')[2]
+        value: str = msg_payload_decoded 
+
+        server.write_registers(register_name, value)
 
 
-    value = server.read_registers(server.write_parameters_slug_to_name[register_name])
-    logger.info(f"read {value=}")
-    mqtt_client.publish_to_ha(
-        register_name, value, server)
+        value = server.read_registers(server.write_parameters_slug_to_name[register_name])
+        logger.info(f"read {value=}")
+        self.mqtt_client.publish_to_ha(
+            register_name, value, server)
     
 class IDeviceInstantiatorCallbacks(ABC):
     @staticmethod
@@ -104,12 +109,14 @@ class RealDeviceInstantiator(IDeviceInstantiatorCallbacks):
 
 
 class App:
-    def __init__(self, device_instantiator: IDeviceInstantiatorCallbacks, options_rel_path=None) -> None:
+    def __init__(self, device_instantiator: IDeviceInstantiatorCallbacks, message_handler_instantiator: type[MessageHandler], options_rel_path=None) -> None:
         # Read configuration
         self.OPTIONS: AppOptions = load_validate_options(options_rel_path if options_rel_path else "/data/options.json")
 
         # Setup callbacks
         self.device_instantiator = device_instantiator
+        self.message_handler_instantiator = message_handler_instantiator
+        
 
     def setup(self) -> None:
         self.sleep_if_midnight()
@@ -122,6 +129,7 @@ class App:
         self.servers = self.device_instantiator.instantiate_servers(
             self.OPTIONS, self.clients)
         logger.info(f"{len(self.servers)} servers set up")
+
 
     def connect(self) -> None:
         for client in self.clients:
@@ -138,6 +146,9 @@ class App:
         if succeed.value != 0:
             logger.info(
                 f"MQTT Connection error: {succeed.name}, code {succeed.value}")
+        
+        self.message_handler = self.message_handler_instantiator(self.servers, self.mqtt_client)
+        self.mqtt_client.message_handler = self.message_handler.decode_and_write
 
         atexit.register(exit_handler, self.servers,
                         self.clients, self.mqtt_client)
@@ -216,7 +227,8 @@ class App:
 if __name__ == "__main__":
     if len(sys.argv) <= 1:  # deployed on homeassistant
         device_instantiator = RealDeviceInstantiator()
-        app = App(device_instantiator=device_instantiator)
+        app = App(device_instantiator=device_instantiator, 
+                  message_handler_instantiator=MessageHandler)
         app.setup()
         app.connect()
         app.loop()
@@ -230,7 +242,7 @@ if __name__ == "__main__":
                     return [SpoofClient()]
 
         device_instantiator = SpoofDeviceInstantiator()
-        app = App(device_instantiator, sys.argv[1])
+        app = App(device_instantiator, MessageHandler, sys.argv[1])
         app.OPTIONS.mqtt_host = "localhost"
         app.OPTIONS.mqtt_port = 1884
         app.OPTIONS.pause_interval_seconds = 10
