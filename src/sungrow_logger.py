@@ -358,15 +358,17 @@ class SungrowLogger(Server):
             'register_type': RegisterTypes.HOLDING_REGISTER
         },
 
-        # 'Set active power ratio of subarray inverter': {
-        #     'addr': 8005,
-        #     'count': 2,
-        #     'dtype': DataType.U32,
-        #     'multiplier': 0.1,
-        #     'unit': '%',
-        #     'device_class': 'power_factor',
-        #     'register_type': RegisterTypes.HOLDING_REGISTER
-        # },
+        'Active Power Control': { # Set active power ratio of subarray inverter
+            'addr': 8005,
+            'count': 2,
+            'dtype': DataType.U32,
+            'multiplier': 0.1,
+            'unit': '%',
+            'min': 0,
+            'max': 100,
+            'ha_entity_type': HAEntityType.NUMBER,
+            'register_type': RegisterTypes.HOLDING_REGISTER
+        },
 
         # 'Set Subarray inverter reactive power': {
         #     'addr': 8007,
