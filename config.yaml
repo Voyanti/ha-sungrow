@@ -1,5 +1,5 @@
 name: "Sungrow Inverter"
-version: "0.4.44"
+version: "0.4.45"
 slug: "sungrow"
 description: "Sungrow Inverter"
 init: false
@@ -37,8 +37,8 @@ options:
       host: "10.0.0.15"
       port: 502
   pause_interval_seconds: 0.5
-  sleep_over_midnight: true
-  sleep_midnight_minutes: 10
+  midnight_sleep_enabled: true
+  midnight_sleep_wakeup_after: 10
   mqtt_host: "localhost"
   mqtt_port: 1884
   # mqtt_host: "core-mosquitto"
@@ -66,8 +66,8 @@ schema:
       parity: bool?
       stopbits: int?
   pause_interval_seconds: int
-  sleep_over_midnight: bool
-  sleep_midnight_minutes: int
+  midnight_sleep_enabled: bool
+  midnight_sleep_wakeup_after: int
   mqtt_host: str
   mqtt_port: port
   mqtt_user: str
