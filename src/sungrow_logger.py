@@ -369,17 +369,17 @@ class SungrowLogger(Server):
             'ha_entity_type': HAEntityType.NUMBER,
             'register_type': RegisterTypes.HOLDING_REGISTER
         },
-        # 'Gradient Ramp down': {
-        #     'addr': 31201,
-        #     'count': 2,
-        #     'dtype': DataType.U32,
-        #     'multiplier': 0.1,
-        #     'unit': '%',
-        #     'min': 0,
-        #     'max': 100,
-        #     'ha_entity_type': HAEntityType.NUMBER,
-        #     'register_type': RegisterTypes.HOLDING_REGISTER
-        # },
+        'Gradient Ramp down': {
+            'addr': 31201 + 1,
+            'count': 1,
+            'dtype': DataType.U16,
+            'multiplier': 1,
+            'unit': '%',
+            'min': 0,
+            'max': 100,
+            'ha_entity_type': HAEntityType.NUMBER,
+            'register_type': RegisterTypes.HOLDING_REGISTER
+        },
 
         # 'Set Subarray inverter reactive power': {
         #     'addr': 8007,
