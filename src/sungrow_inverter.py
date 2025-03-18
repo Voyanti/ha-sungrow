@@ -253,6 +253,9 @@ class SungrowInverter(Server):
         'Power limitation switch': {'addr': 5007, 'dtype': DataType.U16, 'count': 1, 'multiplier': 1, 'unit': '', 'register_type': RegisterTypes.HOLDING_REGISTER, 'ha_entity_type': HAEntityType.SWITCH, 'payload_off': 0x55, 'payload_on': 0xAA},
         'Power limitation setting': {'addr': 5008, 'dtype': DataType.U16, 'count': 1, 'multiplier': 0.1, 'unit': '%', 'register_type': RegisterTypes.HOLDING_REGISTER, 'ha_entity_type': HAEntityType.NUMBER, 'min': 0 , 'max': 100},
         
+        'Active Power Decline Gradient': {'addr': 31201, 'dtype': DataType.U16, 'count': 1, 'multiplier': 1, 'unit': '%', 'register_type': RegisterTypes.HOLDING_REGISTER, 'ha_entity_type': HAEntityType.NUMBER, 'min': 0 , 'max': 6000},
+        'Active Power Rising Gradient': {'addr': 31202, 'dtype': DataType.U16, 'count': 1, 'multiplier': 1, 'unit': '%', 'register_type': RegisterTypes.HOLDING_REGISTER, 'ha_entity_type': HAEntityType.NUMBER, 'min': 0 , 'max': 6000},
+        
         # Europe Only. See export_limitation_supported_models
         # 'Export power limitation': {'addr': 5010, 'dtype': DataType.U16, 'unit': ''},
         # 'Export power limitation value': {'addr': 5011, 'dtype': DataType.U16, 'unit': ''},
