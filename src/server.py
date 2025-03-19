@@ -234,9 +234,8 @@ class Server(ABC):
                         values, address, modbus_id, register_type,
                         exception = ModbusException,
                         msg = f"Error writing register {parameter_name}")
-        except Exception as e:
+        except ModbusException as e:
             logger.error(f"Failure to write after 3 attempts. Continuing")
-            raise e
             return
 
         logger.info(f"Wrote {value=} {unit=} as {values=} to {parameter_name}.")
