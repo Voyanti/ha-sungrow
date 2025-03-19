@@ -25,12 +25,13 @@ Communicates with Sungrow Inverters/Logger/Meters over Modbus TCP/ Serial, and p
 
 Supported models:
 - Sungrow
-    - SG110CX
-    - SG33CX
-    - SG80KTL-20
-    - SG50CX (tested)
-    - Logger 1000x
-    - Acrell DTSD1352
+    - SG50CX 
+    - SG125CX-P2 
+    - Logger 1000x 
+    - Acrell DTSD1352 
+    - SG110CX (untested)
+    - SG33CX (untested)
+    - SG80KTL-20 (untested)
 
 <!-- ![Supports aarch64 Architecture][aarch64-shield]
 ![Supports amd64 Architecture][amd64-shield]
