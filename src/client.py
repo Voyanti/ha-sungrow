@@ -56,6 +56,7 @@ class Client:
 
         Raises:
             ValueError: if register_type not RegisterTypes.HOLDING_REGISTER
+            Exception: if a modbus exception occurs
 
         Returns:
             ModbusPDU: modbus client response
@@ -67,6 +68,11 @@ class Client:
         result = self.client.write_registers(address=address-1,
                                             values=values,
                                             slave=slave_id)
+        
+        if result.isError():
+            self._handle_error_response(result)
+            raise Exception(f"Error writing register at address {address=} on {slave_id=}")
+    
         return result
 
     def connect(self, num_retries=2, sleep_interval=3) -> None:

@@ -2,7 +2,7 @@ from abc import abstractmethod, ABC
 import logging
 from typing import Any, Optional, TypedDict
 
-from .helpers import slugify
+from .helpers import slugify, with_retries
 from .enums import DataType, HAEntityType, RegisterTypes, Parameter, DeviceClass, WriteParameter
 from .client import Client
 from .options import ServerOptions
@@ -228,11 +228,13 @@ class Server(ABC):
         logger.info(
             f"Writing {values} to param {parameter_name} ({register_type}) of {dtype=} from {address=}, {multiplier=}, {count=}, {modbus_id=}")
 
-        result = self.connected_client.write(values, address, modbus_id, register_type)
-
-        if result.isError():
-            self.connected_client._handle_error_response(result)
-            raise Exception(f"Error writing register {parameter_name}")
+        # attempt to write to the register 3 times
+        try:
+            with_retries(fun = self.connected_client.write,
+                        exception = Exception,
+                        msg = f"Error writing register {parameter_name}")
+        except Exception as e:
+            logger.error(f"Failure to write after 3 attempts. Continuing")
 
         logger.info(f"Wrote {value=} {unit=} as {values=} to {parameter_name}.")
 
