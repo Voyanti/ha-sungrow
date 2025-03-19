@@ -370,6 +370,42 @@ class SungrowLogger(Server):
             'register_type': RegisterTypes.HOLDING_REGISTER
         },
 
+
+        # Ramp up/ ramp down
+        'Active Power Ramp Enabled': { 
+            'addr': 8017,
+            'count': 1,
+            'dtype': DataType.U16,
+            'multiplier': 1,
+            'unit': '',
+            'payload_off': 0x55, 
+            'payload_on': 0xAA,
+            'ha_entity_type': HAEntityType.SWITCH,
+            'register_type': RegisterTypes.HOLDING_REGISTER
+        },
+        'Active Power Ramp Down': { 
+            'addr': 8018,
+            'count': 1,
+            'dtype': DataType.U16,
+            'multiplier': 1,
+            'unit': '%',
+            'min': 0,
+            'max': 6000,
+            'ha_entity_type': HAEntityType.NUMBER,
+            'register_type': RegisterTypes.HOLDING_REGISTER
+        },
+        'Active Power Ramp Up': { 
+            'addr': 8019,
+            'count': 1,
+            'dtype': DataType.U16,
+            'multiplier': 1,
+            'unit': '%',
+            'min': 0,
+            'max': 6000,
+            'ha_entity_type': HAEntityType.NUMBER,
+            'register_type': RegisterTypes.HOLDING_REGISTER
+        },
+
         # 'Set Subarray inverter reactive power': {
         #     'addr': 8007,
         #     'count': 2,
