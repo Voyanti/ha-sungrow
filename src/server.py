@@ -4,7 +4,7 @@ from typing import Any, Optional, TypedDict
 
 from .helpers import slugify, with_retries
 from .enums import DataType, HAEntityType, RegisterTypes, Parameter, DeviceClass, WriteParameter
-from .client import Client
+from .client import Client, ModbusException
 from .options import ServerOptions
 
 logger = logging.getLogger(__name__)
@@ -231,10 +231,12 @@ class Server(ABC):
         # attempt to write to the register 3 times
         try:
             with_retries(fun = self.connected_client.write,
-                        exception = Exception,
+                        exception = ModbusException,
                         msg = f"Error writing register {parameter_name}")
         except Exception as e:
             logger.error(f"Failure to write after 3 attempts. Continuing")
+            raise e
+            return
 
         logger.info(f"Wrote {value=} {unit=} as {values=} to {parameter_name}.")
 

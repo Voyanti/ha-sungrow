@@ -8,6 +8,9 @@ from .options import ModbusTCPOptions, ModbusRTUOptions
 from time import sleep
 logger = logging.getLogger(__name__)
 
+class ModbusException(Exception):
+    def __init__(self, *args):
+        super().__init__(*args)
 
 class Client:
     """
@@ -56,7 +59,7 @@ class Client:
 
         Raises:
             ValueError: if register_type not RegisterTypes.HOLDING_REGISTER
-            Exception: if a modbus exception occurs
+            ModbusException: if a modbus exception occurs
 
         Returns:
             ModbusPDU: modbus client response
@@ -71,7 +74,7 @@ class Client:
         
         if result.isError():
             self._handle_error_response(result)
-            raise Exception(f"Error writing register at address {address=} on {slave_id=}")
+            raise ModbusException(f"Error writing register at address {address=} on {slave_id=}")
     
         return result
 
