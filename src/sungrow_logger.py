@@ -372,17 +372,17 @@ class SungrowLogger(Server):
 
 
         # Ramp up/ ramp down
-        'Active Power Ramp Enabled': { 
-            'addr': 8017,
-            'count': 1,
-            'dtype': DataType.U16,
-            'multiplier': 1,
-            'unit': '',
-            'payload_off': 0x55, 
-            'payload_on': 0xAA,
-            'ha_entity_type': HAEntityType.SWITCH,
-            'register_type': RegisterTypes.HOLDING_REGISTER
-        },
+        # 'Active Power Ramp Enabled': { 
+        #     'addr': 8017,
+        #     'count': 1,
+        #     'dtype': DataType.U16,
+        #     'multiplier': 1,
+        #     'unit': '',
+        #     'payload_off': 0x55, 
+        #     'payload_on': 0xAA,
+        #     'ha_entity_type': HAEntityType.SWITCH,
+        #     'register_type': RegisterTypes.HOLDING_REGISTER
+        # },
         'Active Power Ramp Down': { 
             'addr': 8018,
             'count': 1,
