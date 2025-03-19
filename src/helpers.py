@@ -29,7 +29,7 @@ def with_retries(fun, *args, max_tries=3, exception=Exception, msg=f"Exception. 
 
     for i in range(max_tries):
         try:
-            val = fun()
+            val = fun(*args)
             break
         except exception as e:
             logger.error(msg)
