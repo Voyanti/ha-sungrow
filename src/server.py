@@ -230,7 +230,8 @@ class Server(ABC):
 
         # attempt to write to the register 3 times
         try:
-            with_retries(fun = self.connected_client.write,
+            with_retries(self.connected_client.write,
+                        values, address, modbus_id, register_type,
                         exception = ModbusException,
                         msg = f"Error writing register {parameter_name}")
         except Exception as e:
