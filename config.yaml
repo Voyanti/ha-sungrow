@@ -1,5 +1,5 @@
 name: "Sungrow Inverter"
-version: "0.4.54"
+version: "0.4.55"
 slug: "sungrow"
 description: "Sungrow Inverter"
 init: false

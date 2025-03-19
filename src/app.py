@@ -82,7 +82,7 @@ class MessageHandler:
 
         # update state by read back
         value = server.read_registers(server.write_parameters_slug_to_name[register_name])
-        logger.info(f"read {value=}")
+        logger.info(f"Read back after write attempt {value=}")
         self.mqtt_client.publish_to_ha(
             register_name, value, server)
     
