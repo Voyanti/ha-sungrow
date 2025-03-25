@@ -97,6 +97,10 @@ class MqttClient(mqtt.Client):
             state_class = details.get("state_class", False)
             if state_class:
                 discovery_payload['state_class'] = state_class
+                
+            if details.get("value_template") is not None:
+                discovery_payload.update(value_template=details["value_template"])
+                
             discovery_topic = f"{self.ha_discovery_topic}/sensor/{nickname}/{slugify(register_name)}/config"
 
             self.publish(discovery_topic, json.dumps(

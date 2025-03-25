@@ -830,7 +830,7 @@ class SungrowInverter(Server):
             return ModbusSerialClient.convert_from_registers(registers=registers, data_type=ModbusSerialClient.DATATYPE.STRING)
         
         def _decode_bit17(registers):
-            return registers[0] & 0x20000
+            return (registers[0] & 0x20000) >> 17
         
         if dtype == DataType.UTF8: return _decode_utf8(registers)
         elif dtype == DataType.U16: return _decode_u16(registers)
