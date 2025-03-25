@@ -196,9 +196,9 @@ class SungrowInverter(Server):
                                 """
         },
         "Grid Status": {
-            "addr": 5082,
-            "count": 1,
-            "dtype": DataType.B1,
+            "addr": 5081,
+            "count": 2,
+            "dtype": DataType.B17,
             "multiplier": 1,
             "unit": "",
             "device_class": DeviceClass.ENUM,
@@ -829,15 +829,15 @@ class SungrowInverter(Server):
         def _decode_utf8(registers):
             return ModbusSerialClient.convert_from_registers(registers=registers, data_type=ModbusSerialClient.DATATYPE.STRING)
         
-        def _decode_bit1(registers):
-            return registers[0] & 0b10
+        def _decode_bit17(registers):
+            return registers[0] & 0x20000
         
         if dtype == DataType.UTF8: return _decode_utf8(registers)
         elif dtype == DataType.U16: return _decode_u16(registers)
         elif dtype == DataType.U32: return _decode_u32(registers)
         elif dtype == DataType.I16: return _decode_s16(registers)
         elif dtype == DataType.I32: return _decode_s32(registers)
-        elif dtype == DataType.B1: return _decode_bit1(registers)
+        elif dtype == DataType.B17: return _decode_bit17(registers)
         else: raise NotImplementedError(f"Data type {dtype} decoding not implemented")
 
     @staticmethod
