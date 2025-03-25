@@ -11,6 +11,15 @@ class DataType(Enum):
     """
     Data types used by server registers. Used to choose decoding method. depending op server.
     """
+    # Individual Bit
+    B0 = "B0"
+    B1 = "B1"
+    B2 = "B2"
+    B3 = "B3"
+    B4 = "B4"
+    B5 = "B5"
+    B6 = "B6"
+    B7 = "B7"
 
     # Unsigned integers
     U16 = "U16"
@@ -154,6 +163,7 @@ ParameterReq = TypedDict(
 class Parameter(ParameterReq, total=False):
     remarks: str
     state_class: Literal["measurement", "total", "total_increasing"]
+    value_template: str
 
     # all oarameters are required to have these fields
 WriteParameterReq = TypedDict(

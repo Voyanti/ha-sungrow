@@ -56,6 +56,20 @@ or
 - `type` can be one of "RTU" or "TCP"
 - `port` is the com port if `type` is "RTU", TCP port if `type` is "TCP"
 
+# Writing
+Writing is not guarenteed to succeed. Under the default configuration, 3 attempts are made for a write, whereavfter it is aborted. 
+Note that writing is often invalid. E.g. when certain registers are disabled in the device settings. 
+
+# Use with CoCT SCADA
+When used in conjunction with the Voyanti CoCT SCADA addon, production constraints and ramping can be controlled remotely, and real-time generation values can be reported. 
+
+- Designed for use with one or more inverters, connected to a Sungrow Logger. 
+
+To ensure proper working of the scada system, 
+1. Set Power Regulation to Remote Control Mode, with open loop control in the Sungrow Logger web interface.
+2. Configure the CoCT with the topics of the relevant states and commands required as stated in its docs.
+3. Start/Restart this addon, followed by the CoCT scade addon. This will set all production constraints, and ramp constraints to 100% or 100%/min.
+
 # Development
 
 ## Running locally
