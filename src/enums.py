@@ -12,14 +12,7 @@ class DataType(Enum):
     Data types used by server registers. Used to choose decoding method. depending op server.
     """
     # Individual Bit
-    B0 = "B0"
-    B1 = "B1"
-    B2 = "B2"
-    B3 = "B3"
-    B4 = "B4"
-    B5 = "B5"
-    B6 = "B6"
-    B7 = "B7"
+    B17 = "B17"
 
     # Unsigned integers
     U16 = "U16"
