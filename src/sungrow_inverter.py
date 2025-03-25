@@ -136,7 +136,7 @@ class SungrowInverter(Server):
         'Grid Frequency': {'addr': 5036, 'count': 1, 'dtype': DataType.U16, 'multiplier': 0.1, 'unit': 'Hz', 'device_class': DeviceClass.FREQUENCY, 'register_type': RegisterTypes.INPUT_REGISTER, 'state_class': 'measurement'},
 
         # State values (no state_class needed)
-        'Work State': {'addr': 5038, 'count': 1, 'dtype': DataType.U16, 'multiplier': 1, 'unit': '', 'device_class': DeviceClass.ENUM, 'register_type': RegisterTypes.INPUT_REGISTER},
+        # 'Work State': {'addr': 5038, 'count': 1, 'dtype': DataType.U16, 'multiplier': 1, 'unit': '', 'device_class': DeviceClass.ENUM, 'register_type': RegisterTypes.INPUT_REGISTER},
 
         # Power measurements
         'Nominal Reactive Power': {'addr': 5049, 'count': 1, 'dtype': DataType.U16, 'multiplier': 0.1, 'unit': 'kVar', 'device_class': DeviceClass.REACTIVE_POWER, 'register_type': RegisterTypes.INPUT_REGISTER},
@@ -166,7 +166,44 @@ class SungrowInverter(Server):
 
         # State values (no state_class needed)
         'PID Work State': {'addr': 5150, 'count': 1, 'dtype': DataType.U16, 'multiplier': 1, 'unit': '', 'device_class': DeviceClass.ENUM, 'register_type': RegisterTypes.INPUT_REGISTER},
-        'PID Alarm Code': {'addr': 5151, 'count': 1, 'dtype': DataType.U16, 'multiplier': 1, 'unit': '', 'device_class': DeviceClass.ENUM, 'register_type': RegisterTypes.INPUT_REGISTER}
+        'PID Alarm Code': {'addr': 5151, 'count': 1, 'dtype': DataType.U16, 'multiplier': 1, 'unit': '', 'device_class': DeviceClass.ENUM, 'register_type': RegisterTypes.INPUT_REGISTER},
+
+        "Work State": {
+            "addr": 5038,
+            "count": 1,
+            "dtype": DataType.U16,
+            "multiplier": 1,
+            "unit": "",
+            "device_class": DeviceClass.ENUM,
+            "register_type": RegisterTypes.INPUT_REGISTER,
+            "value_template": """
+                                {% set states = {
+                                '0': 'Run',
+                                '32768': 'Stop',
+                                '4864': 'Key Stop',
+                                '4864': 'Emergency Stop',
+                                '5120': 'Standby',
+                                '4608': 'Initial standby',
+                                '5632': 'Starting',
+                                '37120': 'Alarm Run',
+                                '33024': 'Derating Run',
+                                '33280': 'Dispatch Run',
+                                '21760': 'Fault',
+                                '9472': 'Communication Fault',
+                                '4369': 'Uninitialised',
+                                } %}
+                                {{ states[value] if value in states else 'unknown' }}
+                                """
+        },
+        "Grid Status": {
+            "addr": 5082,
+            "count": 1,
+            "dtype": DataType.B1,
+            "multiplier": 1,
+            "unit": "",
+            "device_class": DeviceClass.ENUM,
+            "register_type": RegisterTypes.INPUT_REGISTER,
+        }
     }
 
     # same registers store either phase or line voltage, depending on a flag. see setup_valid_register_for_model
@@ -249,6 +286,7 @@ class SungrowInverter(Server):
         # 'System clock: Second': {'addr': 5005, 'dtype': DataType.U16, 'count': 1, 'unit': '', 'register_type': RegisterTypes.HOLDING_REGISTER},
 
         # 'Start/Stop': {'addr': 5006, 'dtype': DataType.U16, 'count': 1, 'unit': '', 'device_class': DeviceClass.ENUM, 'register_type': RegisterTypes.HOLDING_REGISTER},
+        
 
         'Power limitation switch': {'addr': 5007, 'dtype': DataType.U16, 'count': 1, 'multiplier': 1, 'unit': '', 'register_type': RegisterTypes.HOLDING_REGISTER, 'ha_entity_type': HAEntityType.SWITCH, 'payload_off': 0x55, 'payload_on': 0xAA},
         'Power limitation setting': {'addr': 5008, 'dtype': DataType.U16, 'count': 1, 'multiplier': 0.1, 'unit': '%', 'register_type': RegisterTypes.HOLDING_REGISTER, 'ha_entity_type': HAEntityType.NUMBER, 'min': 0 , 'max': 100},
@@ -790,11 +828,16 @@ class SungrowInverter(Server):
 
         def _decode_utf8(registers):
             return ModbusSerialClient.convert_from_registers(registers=registers, data_type=ModbusSerialClient.DATATYPE.STRING)
+        
+        def _decode_bit1(registers):
+            return registers[0] & 0b10
+        
         if dtype == DataType.UTF8: return _decode_utf8(registers)
         elif dtype == DataType.U16: return _decode_u16(registers)
         elif dtype == DataType.U32: return _decode_u32(registers)
         elif dtype == DataType.I16: return _decode_s16(registers)
         elif dtype == DataType.I32: return _decode_s32(registers)
+        elif dtype == DataType.B1: return _decode_bit1(registers)
         else: raise NotImplementedError(f"Data type {dtype} decoding not implemented")
 
     @staticmethod

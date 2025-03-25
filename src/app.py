@@ -39,7 +39,8 @@ def exit_handler(
     for client in modbus_clients:
         client.close()
 
-    mqtt_client.loop_stop()
+    # messages.wait_for_publish()
+    mqtt_client.loop_stop() # doesn't guarentee that all messages are published
 
 class MessageHandler:
     def __init__(self, servers: list[Server], mqtt_client: MqttClient):
