@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+import os
+import signal
 from time import sleep
 from datetime import datetime, timedelta
 import atexit
@@ -174,6 +176,9 @@ class App:
 
         sleep(READ_INTERVAL)
         self.mqtt_client.loop_start()
+        sleep(READ_INTERVAL)
+
+        self.mqtt_client.ensure_connected(self.OPTIONS.mqtt_reconnect_attempts)
 
         # Publish Discovery Topics
         for server in self.servers:
@@ -187,6 +192,8 @@ class App:
 
         # every read_interval seconds, read the registers and publish to mqtt
         while True:
+            self.mqtt_client.ensure_connected(self.OPTIONS.mqtt_reconnect_attempts)
+
             for server in self.servers:
                 for write_register_name, _ in server.write_parameters.items():
                     sleep(READ_INTERVAL)
