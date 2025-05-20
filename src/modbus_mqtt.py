@@ -7,7 +7,7 @@ import json
 import logging
 
 from .helpers import slugify
-from .loader import AppOptions
+from .options import AppOptions
 
 from random import getrandbits
 from time import time, sleep
@@ -55,7 +55,12 @@ class MqttClient(mqtt.Client):
 
         def on_message(client, userdata, msg):
             logger.info("Received message on MQTT")
-            self.message_handler(msg.topic, msg.payload.decode('utf-8'))
+            try: 
+                self.message_handler(msg.topic, msg.payload.decode('utf-8'))
+
+            except Exception as e:
+                logger.error(f"Exception while handling received message. Stop Process. \n {e}")
+                os.kill(os.getpid(), signal.SIGINT)
 
         self.on_connect = on_connect
         self.on_disconnect = on_disconnect
