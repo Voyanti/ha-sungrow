@@ -163,12 +163,20 @@ class App:
         logger.info(f"Connecting to MQTT broker")
         self.mqtt_client = MqttClient(self.OPTIONS)
         self.mqtt_client.connect_timeout = 20
-        succeed: MQTTErrorCode = self.mqtt_client.connect(
-            host=self.OPTIONS.mqtt_host, port=self.OPTIONS.mqtt_port
-        )
-        if succeed.value != 0:
-            logger.info(
-                f"MQTT Connection error: {succeed.name}, code {succeed.value}")
+
+        for i in range(2):
+            try: 
+                succeed: MQTTErrorCode = self.mqtt_client.connect(
+                    host=self.OPTIONS.mqtt_host, port=self.OPTIONS.mqtt_port
+                )
+                if succeed.value != 0:
+                    logger.info(
+                        f"MQTT Connection error: {succeed.name}, code {succeed.value}")
+                    
+            except ConnectionRefusedError as con_err:
+                logger.error(f"COnnection refused. Sleep 1 min and retry")
+                sleep(60)
+
         
         self.message_handler = self.message_handler_instantiator(self.servers, self.mqtt_client)
         self.mqtt_client.message_handler = self.message_handler.decode_and_write
