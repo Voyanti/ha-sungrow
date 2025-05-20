@@ -1,5 +1,5 @@
 name: "Sungrow Inverter"
-version: "0.4.62"
+version: "0.4.63"
 image: ghcr.io/voyanti/ha-sungrow
 slug: "ha-sungrow"
 description: "Sungrow Inverter Prebuilt"
@@ -48,6 +48,7 @@ options:
   mqtt_password: "mqtt"
   mwtt_ha_discovery_topic: "homeassistant"
   mqtt_base_topic: "modbus"
+  mqtt_reconnect_attempts: 3
 schema:
   servers:
     - name: str
@@ -75,3 +76,4 @@ schema:
   mqtt_password: password
   mwtt_ha_discovery_topic: str
   mqtt_base_topic: str
+  mqtt_reconnect_attempts: int
