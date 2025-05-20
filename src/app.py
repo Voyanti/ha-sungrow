@@ -174,7 +174,10 @@ class App:
                         f"MQTT Connection error: {succeed.name}, code {succeed.value}")
                     
             except ConnectionRefusedError as con_err:
-                logger.error(f"COnnection refused. Sleep 1 min and retry")
+                logger.error(f"Connection refused. Sleep 1 min and retry")
+                sleep(60)
+            except Exception as e:
+                logger.error(f"{e} \n\n Sleep 1 min and retry mqtt connection")
                 sleep(60)
 
         
