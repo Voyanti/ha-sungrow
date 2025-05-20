@@ -160,7 +160,9 @@ class App:
             server.connect()
 
         # Setup MQTT Client
+        logger.info(f"Connecting to MQTT broker")
         self.mqtt_client = MqttClient(self.OPTIONS)
+        self.mqtt_client.connect_timeout = 20
         succeed: MQTTErrorCode = self.mqtt_client.connect(
             host=self.OPTIONS.mqtt_host, port=self.OPTIONS.mqtt_port
         )
