@@ -1,5 +1,5 @@
 name: "Sungrow Inverter"
-version: "0.4.68"
+version: "0.4.69"
 image: ghcr.io/voyanti/ha-sungrow
 slug: "ha-sungrow"
 description: "Sungrow Inverter Prebuilt"
@@ -30,8 +30,8 @@ options:
       server_type: "SUNGROW_METER"
       connected_client: "Client1"
       modbus_id: 2
-      # PT: 1
-      # CT: 320
+      pt_ratio: 1
+      ct_ratio: 320
   clients:
     - name: "Client1"
       type: "TCP"
