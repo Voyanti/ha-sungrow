@@ -11,6 +11,14 @@ class ServerOptions:
     connected_client: str
     modbus_id: int
 
+@dataclass
+class SungrowMeterOptions(ServerOptions):
+    """Sungrow Meter specific constants
+    """
+    server_type = "SUNGROW_METER"
+    pt_ratio: int
+    ct_ratio: int
+
 
 @dataclass
 class ClientOptions:
@@ -37,7 +45,7 @@ class ModbusRTUOptions(ClientOptions):
 @dataclass
 class AppOptions:
     """ Concatenated options for reading specific format of all options from config json """
-    servers: list[ServerOptions]
+    servers: list[Union[SungrowMeterOptions, ServerOptions]]
     clients: list[Union[ModbusRTUOptions, ModbusTCPOptions]]
 
     pause_interval_seconds: int
