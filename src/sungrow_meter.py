@@ -223,7 +223,7 @@ class AcrelMeter(Server):
     @classmethod
     def from_ServerOptions(
         cls,
-        opts: ServerOptions, # opts will be SungrowMeterOptions if config has the ratios
+        opts: ServerOptions | SungrowMeterOptions, # opts will be SungrowMeterOptions if config has the ratios
         clients: list[Client]
     ):
         name = opts.name
@@ -251,12 +251,8 @@ class AcrelMeter(Server):
             ct_ratio_val = opts.ct_ratio
             logger.info(f"Instantiating AcrelMeter '{name}' with PT_RATIO={pt_ratio_val}, CT_RATIO={ct_ratio_val} from SungrowMeterOptions.")
         else:
-            # This case implies the config for this server_type didn't have the ratios,
-            # or it wasn't structured as SungrowMeterOptions.
-            # The __init__ will raise an error if they are required.
             logger.warning(
                 f"AcrelMeter '{name}' is being instantiated without explicit PT/CT ratios from config. "
-                f"Ensure server_type '{opts.server_type}' is correctly associated with options providing these ratios if needed."
             )
 
         # Pass extracted ratios (or None) as keyword arguments to the constructor
@@ -270,7 +266,7 @@ class AcrelMeter(Server):
         )
 
     def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
+        super().__init__(*args)
         self._supported_models = ('DTSD1352', ) 
         self._manufacturer = "Acrel"
         # TODO shouod be read in from registers not hard-coded
