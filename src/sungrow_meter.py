@@ -17,6 +17,7 @@ class AcrelMeter(Server):
     # regisister definitions in document are 0-indexed. Add 1
     @staticmethod   
     def get_registers(VOLTAGE_MULTIPLIER, CURRENT_MULTIPLIER, POWER_MULTIPLIER, ENERGY_MULTIPLIER) -> dict[str, Parameter]:
+        logger.info(f"{VOLTAGE_MULTIPLIER=}; {CURRENT_MULTIPLIER=}; {POWER_MULTIPLIER=}; {ENERGY_MULTIPLIER=};")
         relevant_registers: dict[str, Parameter] = {
             "Phase A Voltage": {
                 "addr": 0x0061+1,
@@ -270,10 +271,13 @@ class AcrelMeter(Server):
         self._supported_models = ('DTSD1352', ) 
         self._manufacturer = "Acrel"
         # TODO shouod be read in from registers not hard-coded
-        if PT_RATIO := kwargs.get("PT_RATIO") is None:
+        PT_RATIO = kwargs.get("PT_RATIO")
+        if PT_RATIO is None:
             raise ValueError("No PT Ratio Specified for Sungrow Meter") # Voltage Transfer
-        if CT_RATIO := kwargs.get("CT_RATIO") is None:
+        CT_RATIO = kwargs.get("CT_RATIO") 
+        if CT_RATIO is None:
             raise ValueError("No CT Ratio Specified for Sungrow Meter") # Current Transfer
+        logger.info(f"Meter : {PT_RATIO=}; {CT_RATIO=}")
         VOLTAGE_MULTIPLIER = 0.1 * PT_RATIO
         CURRENT_MULTIPLIER = 0.01 * CT_RATIO
         POWER_MULTIPLIER = 0.001 * PT_RATIO * CT_RATIO
@@ -283,6 +287,8 @@ class AcrelMeter(Server):
         self.serial = 'unknown'
 
         self.device_info:dict | None = None
+
+        print(self.parameters)
 
     @property
     def manufacturer(self):
