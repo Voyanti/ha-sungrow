@@ -18,6 +18,7 @@ class SungrowMeterOptions(ServerOptions):
     server_type = "SUNGROW_METER"
     pt_ratio: int
     ct_ratio: int
+    meter_reverse_connection: bool
 
 
 @dataclass
