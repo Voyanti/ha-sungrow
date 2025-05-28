@@ -1,4 +1,4 @@
-from typing import final
+from typing import Optional, final
 from .server import Server
 from .client import Client
 from .enums import DeviceClass, Parameter, RegisterTypes, DataType
@@ -16,7 +16,7 @@ class AcrelMeter(Server):
     # subset of all registers in documentation
     # regisister definitions in document are 0-indexed. Add 1
     @staticmethod   
-    def get_registers(VOLTAGE_MULTIPLIER, CURRENT_MULTIPLIER, POWER_MULTIPLIER, ENERGY_MULTIPLIER) -> dict[str, Parameter]:
+    def get_registers(VOLTAGE_MULTIPLIER, CURRENT_MULTIPLIER, POWER_MULTIPLIER, ENERGY_MULTIPLIER, meter_reverse_connection: Optional[bool]) -> dict[str, Parameter]:
         logger.info(f"{VOLTAGE_MULTIPLIER=}; {CURRENT_MULTIPLIER=}; {POWER_MULTIPLIER=}; {ENERGY_MULTIPLIER=};")
         relevant_registers: dict[str, Parameter] = {
             "Phase A Voltage": {
@@ -130,7 +130,7 @@ class AcrelMeter(Server):
                 "state_class": "measurement",
                 "multiplier": POWER_MULTIPLIER
             },
-            "PF": {
+            "PF": { # TODO check if sign is flipped on reverse connection and adjust
                 "addr": 0x017F+1,
                 "count": 1,
                 "register_type": RegisterTypes.HOLDING_REGISTER,
@@ -178,6 +178,9 @@ class AcrelMeter(Server):
                 "state_class": "measurement",
                 "multiplier": POWER_MULTIPLIER
             },
+        }
+
+        forward_energy_params: dict[str, Parameter]  = {
             "Total Grid Import": {                    # was 'Forward Active Energy'
                 "addr": 0x000A+1,
                 "count": 2,
@@ -217,6 +220,54 @@ class AcrelMeter(Server):
                 "multiplier": ENERGY_MULTIPLIER
             }
         }
+
+        # When the meter connection is reversed, swop the import and export energy values
+        reverse_energy_params: dict[str, Parameter]  = {
+            "Total Grid Export": {                    # was 'Forward Active Energy'
+                "addr": 0x000A+1,
+                "count": 2,
+                "register_type": RegisterTypes.HOLDING_REGISTER,
+                "dtype": DataType.I32,
+                "unit": "kWh",
+                "device_class": DeviceClass.ENERGY,
+                "multiplier": ENERGY_MULTIPLIER,
+                'state_class': 'total'
+            },
+            "Total Grid Import": {                    # was 'Reverse Active Energy'
+                "addr": 0x0014+1,
+                "count": 2,
+                "register_type": RegisterTypes.HOLDING_REGISTER,
+                "dtype": DataType.I32,
+                "unit": "kWh",
+                "device_class": DeviceClass.ENERGY,
+                "multiplier": ENERGY_MULTIPLIER,
+                'state_class': 'total'
+            },
+            "Reverse Reactive Energy": {
+                "addr": 0x0028+1,
+                "count": 2,
+                "register_type": RegisterTypes.HOLDING_REGISTER,
+                "dtype": DataType.I32,
+                "unit": "kVarh",
+                "device_class": DeviceClass.ENERGY,
+                "multiplier": ENERGY_MULTIPLIER
+            },
+            "Forward Reactive Energy": {
+                "addr": 0x0032+1,
+                "count": 2,
+                "register_type": RegisterTypes.HOLDING_REGISTER,
+                "dtype": DataType.I32,
+                "unit": "kVarh",
+                "device_class": DeviceClass.ENERGY,
+                "multiplier": ENERGY_MULTIPLIER
+            }
+        }
+        if meter_reverse_connection:
+            relevant_registers.update(reverse_energy_params)
+            logger.info("Swopped Import and Export Energy Registers")
+        else: 
+            relevant_registers.update(forward_energy_params)
+
         return relevant_registers
     # write_parameters = {}
 
@@ -245,12 +296,15 @@ class AcrelMeter(Server):
 
         pt_ratio_val = None
         ct_ratio_val = None
+        meter_reverse_connection = None
 
         # Check if the options object has the specific ratios
         if isinstance(opts, SungrowMeterOptions):
             pt_ratio_val = opts.pt_ratio
             ct_ratio_val = opts.ct_ratio
+            meter_reverse_connection = opts.meter_reverse_connection
             logger.info(f"Instantiating AcrelMeter '{name}' with PT_RATIO={pt_ratio_val}, CT_RATIO={ct_ratio_val} from SungrowMeterOptions.")
+            logger.info(f"Meter Reverse Connection: {meter_reverse_connection is not None and meter_reverse_connection}")
         else:
             logger.warning(
                 f"AcrelMeter '{name}' is being instantiated without explicit PT/CT ratios from config. "
@@ -263,32 +317,37 @@ class AcrelMeter(Server):
             modbus_id,
             connected_client,
             PT_RATIO=pt_ratio_val, # Pass as kwargs
-            CT_RATIO=ct_ratio_val  # Pass as kwargs
+            CT_RATIO=ct_ratio_val,  # Pass as kwargs
+            meter_reverse_connection=meter_reverse_connection
         )
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args)
         self._supported_models = ('DTSD1352', ) 
         self._manufacturer = "Acrel"
-        # TODO shouod be read in from registers not hard-coded
+        self._write_parameters: dict = dict()
+        self.serial = 'unknown'
+        self.device_info:dict | None = None
+
+        # Meter-specific config
         PT_RATIO = kwargs.get("PT_RATIO")
         if PT_RATIO is None:
             raise ValueError("No PT Ratio Specified for Sungrow Meter") # Voltage Transfer
         CT_RATIO = kwargs.get("CT_RATIO") 
         if CT_RATIO is None:
             raise ValueError("No CT Ratio Specified for Sungrow Meter") # Current Transfer
-        logger.info(f"Meter : {PT_RATIO=}; {CT_RATIO=}")
+        reverse_multiplier = 1
+        meter_reverse_connection = kwargs.get("meter_reverse_connection") 
+        if meter_reverse_connection is not None:
+            reverse_multiplier = -1
+            logger.info(f"Invert Power Measurements for reverse connection.")
+        logger.info(f"Meter : {PT_RATIO=}; {CT_RATIO=}, {meter_reverse_connection=}")
         VOLTAGE_MULTIPLIER = 0.1 * PT_RATIO
         CURRENT_MULTIPLIER = 0.01 * CT_RATIO
-        POWER_MULTIPLIER = 0.001 * PT_RATIO * CT_RATIO
+        POWER_MULTIPLIER = 0.001 * PT_RATIO * CT_RATIO * reverse_multiplier
         ENERGY_MULTIPLIER = 0.01 * PT_RATIO * CT_RATIO
-        self._parameters = AcrelMeter.get_registers(VOLTAGE_MULTIPLIER, CURRENT_MULTIPLIER, POWER_MULTIPLIER, ENERGY_MULTIPLIER)
-        self._write_parameters: dict = dict()
-        self.serial = 'unknown'
+        self._parameters = AcrelMeter.get_registers(VOLTAGE_MULTIPLIER, CURRENT_MULTIPLIER, POWER_MULTIPLIER, ENERGY_MULTIPLIER, meter_reverse_connection)
 
-        self.device_info:dict | None = None
-
-        print(self.parameters)
 
     @property
     def manufacturer(self):
