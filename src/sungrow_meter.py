@@ -338,7 +338,7 @@ class AcrelMeter(Server):
             raise ValueError("No CT Ratio Specified for Sungrow Meter") # Current Transfer
         reverse_multiplier = 1
         meter_reverse_connection = kwargs.get("meter_reverse_connection") 
-        if meter_reverse_connection is not None:
+        if meter_reverse_connection is not None and meter_reverse_connection:
             reverse_multiplier = -1
             logger.info(f"Invert Power Measurements for reverse connection.")
         logger.info(f"Meter : {PT_RATIO=}; {CT_RATIO=}, {meter_reverse_connection=}")
