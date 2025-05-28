@@ -18,6 +18,8 @@ class AcrelMeter(Server):
     @staticmethod   
     def get_registers(VOLTAGE_MULTIPLIER, CURRENT_MULTIPLIER, POWER_MULTIPLIER, ENERGY_MULTIPLIER, meter_reverse_connection: Optional[bool]) -> dict[str, Parameter]:
         logger.info(f"{VOLTAGE_MULTIPLIER=}; {CURRENT_MULTIPLIER=}; {POWER_MULTIPLIER=}; {ENERGY_MULTIPLIER=};")
+
+        multiplier_apparant_power_and_pf = -1 if meter_reverse_connection is not None and meter_reverse_connection else 1
         relevant_registers: dict[str, Parameter] = {
             "Phase A Voltage": {
                 "addr": 0x0061+1,
@@ -130,14 +132,14 @@ class AcrelMeter(Server):
                 "state_class": "measurement",
                 "multiplier": POWER_MULTIPLIER
             },
-            "PF": { # TODO check if sign is flipped on reverse connection and adjust
+            "PF": {
                 "addr": 0x017F+1,
                 "count": 1,
                 "register_type": RegisterTypes.HOLDING_REGISTER,
                 "dtype": DataType.I16,
                 "unit": "",
                 "device_class": DeviceClass.POWER_FACTOR,
-                "multiplier": 0.001
+                "multiplier": 0.001*multiplier_apparant_power_and_pf # reversed if meter reversed
             },
             "Grid Frequency": {
                 "addr": 0x0077+1,
@@ -176,7 +178,7 @@ class AcrelMeter(Server):
                 "unit": "kVA",
                 "device_class": DeviceClass.APPARENT_POWER,
                 "state_class": "measurement",
-                "multiplier": POWER_MULTIPLIER
+                "multiplier": POWER_MULTIPLIER*multiplier_apparant_power_and_pf # reversed if meter reversed
             },
         }
 
