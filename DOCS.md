@@ -24,9 +24,19 @@ Each server should be defined as
 
 - `name` is used to create the HA entity unique_id, and device name. Use alphanumeric characters only. Keep it unique.
 - `serialnum` is verified upon add-on startup.
-- `server_type` is used to select the class of server to instantiate. This add-on supports only PANELTRACK.
+- `server_type` is used to select the class of server to instantiate. This add-on supports SUNGROW_INVERTER, SUNGROW_METER and SUNGROW_LOGGER.
 - `connected_client` specifies on which client bus (abstraction of serial port or tcp ip) the server is connected. Most systems use a single client.
 - `modbus_id`: Modbus slave address of the device/server.
+
+### Sungrow Meter
+
+The sungrow meter has 3 additional parameters:
+
+- `pt_ratio`: the voltage transformer ratio (int)
+- `ct_ratio`: the current transformer ratio (int)
+- `meter_reverse_connection`: a flag used to indicate if the ct was connected in reverse. Swops import and export registers and multiplies power values by -1. (bool)
+
+All three values can be found from the logger web UI at Device Monitoring > Select Meter Device > Initial Parameters.
 
 ## Client
 
