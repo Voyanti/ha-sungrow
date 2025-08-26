@@ -631,6 +631,11 @@ class SungrowInverter(Server):
             'mppt': 9,
             'string_per_mppt': 2
         },
+        0x2C35: {
+            'model': 'SG33CX-P2',
+            'mppt': 3,
+            'string_per_mppt': 2
+        },
         0x0138: {
             'model': 'SG80KTL-20',
             'mppt': 1,
