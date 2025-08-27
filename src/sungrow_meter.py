@@ -165,7 +165,7 @@ class AcrelMeter(Server):
                 "count": 2,
                 "register_type": RegisterTypes.HOLDING_REGISTER,
                 "dtype": DataType.I32,
-                "unit": "kVar",
+                "unit": "kvar",
                 "device_class": DeviceClass.REACTIVE_POWER,
                 "state_class": "measurement",
                 "multiplier": POWER_MULTIPLIER
@@ -208,7 +208,7 @@ class AcrelMeter(Server):
                 "count": 2,
                 "register_type": RegisterTypes.HOLDING_REGISTER,
                 "dtype": DataType.I32,
-                "unit": "kVarh",
+                "unit": "kvarh",
                 "device_class": DeviceClass.ENERGY,
                 "multiplier": ENERGY_MULTIPLIER
             },
@@ -217,7 +217,7 @@ class AcrelMeter(Server):
                 "count": 2,
                 "register_type": RegisterTypes.HOLDING_REGISTER,
                 "dtype": DataType.I32,
-                "unit": "kVarh",
+                "unit": "kvarh",
                 "device_class": DeviceClass.ENERGY,
                 "multiplier": ENERGY_MULTIPLIER
             }
@@ -250,8 +250,8 @@ class AcrelMeter(Server):
                 "count": 2,
                 "register_type": RegisterTypes.HOLDING_REGISTER,
                 "dtype": DataType.I32,
-                "unit": "kVarh",
-                "device_class": DeviceClass.ENERGY,
+                "unit": "kvarh",
+                "device_class": DeviceClass.REACTIVE_ENERGY,
                 "multiplier": ENERGY_MULTIPLIER
             },
             "Forward Reactive Energy": {
@@ -259,8 +259,8 @@ class AcrelMeter(Server):
                 "count": 2,
                 "register_type": RegisterTypes.HOLDING_REGISTER,
                 "dtype": DataType.I32,
-                "unit": "kVarh",
-                "device_class": DeviceClass.ENERGY,
+                "unit": "kvarh",
+                "device_class": DeviceClass.REACTIVE_ENERGY,
                 "multiplier": ENERGY_MULTIPLIER
             }
         }

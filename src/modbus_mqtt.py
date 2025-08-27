@@ -100,9 +100,11 @@ class MqttClient(mqtt.Client):
                 "state_topic": state_topic,
                 "availability_topic": availability_topic,
                 "device": device,
-                "device_class": details["device_class"].value,
+                # "device_class": details["device_class"].value,
                 "unit_of_measurement": details["unit"],
             }
+            if details["device_class"] is not None:
+                discovery_payload["device_class"] = details["device_class"].value
             state_class = details.get("state_class", False)
             if state_class:
                 discovery_payload['state_class'] = state_class
