@@ -175,10 +175,10 @@ class AcrelMeter(Server):
                 "count": 2,
                 "register_type": RegisterTypes.HOLDING_REGISTER,
                 "dtype": DataType.I32,
-                "unit": "kVA",
+                "unit": "VA",
                 "device_class": DeviceClass.APPARENT_POWER,
                 "state_class": "measurement",
-                "multiplier": POWER_MULTIPLIER*multiplier_apparant_power_and_pf # reversed if meter reversed
+                "multiplier": 1000*POWER_MULTIPLIER*multiplier_apparant_power_and_pf # reversed if meter reversed
             },
         }
 
@@ -209,7 +209,7 @@ class AcrelMeter(Server):
                 "register_type": RegisterTypes.HOLDING_REGISTER,
                 "dtype": DataType.I32,
                 "unit": "kvarh",
-                "device_class": DeviceClass.ENERGY,
+                "device_class": DeviceClass.REACTIVE_ENERGY,
                 "multiplier": ENERGY_MULTIPLIER
             },
             "Reverse Reactive Energy": {
@@ -218,7 +218,7 @@ class AcrelMeter(Server):
                 "register_type": RegisterTypes.HOLDING_REGISTER,
                 "dtype": DataType.I32,
                 "unit": "kvarh",
-                "device_class": DeviceClass.ENERGY,
+                "device_class": DeviceClass.REACTIVE_ENERGY,
                 "multiplier": ENERGY_MULTIPLIER
             }
         }
