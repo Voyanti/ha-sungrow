@@ -90,10 +90,10 @@ class SungrowInverter(Server):
     #     ParamInfo(name='Power Factor', address=5035, dtype=DataType.I16, register_type=RegisterTypes.INPUT_REGISTER, unit='no unit of measurement', multiplier=0.001),
     #     ParamInfo(name='Grid Frequency', address=5036, dtype=DataType.U16, register_type=RegisterTypes.INPUT_REGISTER, unit='Hz', multiplier=0.1),
     #     ParamInfo(name='Work State', address=5038, dtype=DataType.U16, register_type=RegisterTypes.INPUT_REGISTER, unit=None, multiplier=None),
-    #     ParamInfo(name='Nominal Reactive Power', address=5049, dtype=DataType.U16, register_type=RegisterTypes.INPUT_REGISTER, unit='kVar', multiplier=0.1),
+    #     ParamInfo(name='Nominal Reactive Power', address=5049, dtype=DataType.U16, register_type=RegisterTypes.INPUT_REGISTER, unit='kvar', multiplier=0.1),
     #     ParamInfo(name='Array Insulation Resistance', address=5071, dtype=DataType.U16, register_type=RegisterTypes.INPUT_REGISTER, unit='kΩ', multiplier=None),
     #     ParamInfo(name='Active Power Regulation Setpoint', address=5077, dtype=DataType.U32, register_type=RegisterTypes.INPUT_REGISTER, unit='W', multiplier=None),
-    #     ParamInfo(name='Reactive Power Regulation Setpoint', address=5079, dtype=DataType.I32, register_type=RegisterTypes.INPUT_REGISTER, unit='Var', multiplier=None),
+    #     ParamInfo(name='Reactive Power Regulation Setpoint', address=5079, dtype=DataType.I32, register_type=RegisterTypes.INPUT_REGISTER, unit='var', multiplier=None),
     #     ParamInfo(name='Work State (Extended)', address=5081, dtype=DataType.U32, register_type=RegisterTypes.INPUT_REGISTER, unit=None, multiplier=None),
     #     ParamInfo(name='Daily Running Time', address=5113, dtype=DataType.U16, register_type=RegisterTypes.INPUT_REGISTER, unit='min', multiplier=None),
     #     ParamInfo(name='Present Country', address=5114, dtype=DataType.U16, register_type=RegisterTypes.INPUT_REGISTER, unit=None, multiplier=None),
@@ -139,10 +139,10 @@ class SungrowInverter(Server):
         # 'Work State': {'addr': 5038, 'count': 1, 'dtype': DataType.U16, 'multiplier': 1, 'unit': '', 'device_class': DeviceClass.ENUM, 'register_type': RegisterTypes.INPUT_REGISTER},
 
         # Power measurements
-        'Nominal Reactive Power': {'addr': 5049, 'count': 1, 'dtype': DataType.U16, 'multiplier': 0.1, 'unit': 'kVar', 'device_class': DeviceClass.REACTIVE_POWER, 'register_type': RegisterTypes.INPUT_REGISTER},
+        'Nominal Reactive Power': {'addr': 5049, 'count': 1, 'dtype': DataType.U16, 'multiplier': 0.1, 'unit': 'kvar', 'device_class': DeviceClass.REACTIVE_POWER, 'register_type': RegisterTypes.INPUT_REGISTER},
         'Array Insulation Resistance': {'addr': 5071, 'count': 1, 'dtype': DataType.U16, 'multiplier': 1, 'unit': 'kΩ',  'device_class': None, 'register_type': RegisterTypes.INPUT_REGISTER},
         'Active Power Regulation Setpoint': {'addr': 5077, 'count': 2, 'dtype': DataType.U32, 'multiplier': 1, 'unit': 'W', 'device_class': DeviceClass.POWER, 'register_type': RegisterTypes.INPUT_REGISTER},
-        'Reactive Power Regulation Setpoint': {'addr': 5079, 'count': 2, 'dtype': DataType.I32, 'multiplier': 1, 'unit': 'Var', 'device_class': DeviceClass.REACTIVE_POWER, 'register_type': RegisterTypes.INPUT_REGISTER},
+        'Reactive Power Regulation Setpoint': {'addr': 5079, 'count': 2, 'dtype': DataType.I32, 'multiplier': 1, 'unit': 'var', 'device_class': DeviceClass.REACTIVE_POWER, 'register_type': RegisterTypes.INPUT_REGISTER},
 
         # State values (no state_class needed)
         'Work State (Extended)': {'addr': 5081, 'count': 2, 'dtype': DataType.U32, 'multiplier': 1, 'unit': '', 'device_class': DeviceClass.ENUM, 'register_type': RegisterTypes.INPUT_REGISTER},
@@ -314,7 +314,7 @@ class SungrowInverter(Server):
         # 'Night SVG Switch': {'addr': 5035, 'dtype': DataType.U16, 'unit': ''},
 
         # 'Power limitation adjustment': {'addr': 5039, 'dtype': DataType.U16, 'unit': '0.1kW'},
-        # 'Reactive power adjustment': {'addr': 5040, 'dtype': DataType.I16, 'unit': '0.1kVar'},
+        # 'Reactive power adjustment': {'addr': 5040, 'dtype': DataType.I16, 'unit': '0.1kvar'},
         # 'PID Recovery': {'addr': 5041, 'dtype': DataType.U16, 'unit': ''},
         # 'Anti-PID': {'addr': 5042, 'dtype': DataType.U16, 'unit': ''},
         # 'Full-Day PID Suppression': {'addr': 5043, 'dtype': DataType.U16, 'unit': ''},
