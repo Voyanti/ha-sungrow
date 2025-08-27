@@ -46,7 +46,7 @@ class SungrowLogger(Server):
             'dtype': DataType.U16,
             'multiplier': 1,
             'unit': 'Set',
-            'device_class': DeviceClass.ENUM,
+            'device_class': None,
             'register_type': RegisterTypes.INPUT_REGISTER},
         'Total faulty devices': {
             'addr': 8006,
@@ -54,7 +54,7 @@ class SungrowLogger(Server):
             'dtype': DataType.U16,
             'multiplier': 1,
             'unit': 'Set',
-            'device_class': DeviceClass.ENUM,
+            'device_class': None,
             'register_type': RegisterTypes.INPUT_REGISTER},
         'Digital input state': {
             'addr': 8021,
@@ -157,7 +157,7 @@ class SungrowLogger(Server):
             'count': 1,
             'dtype': DataType.U16,
             'multiplier': 1,
-            'unit': 'kVar',
+            'unit': 'kvar',
             'device_class': DeviceClass.REACTIVE_POWER,
             'register_type': RegisterTypes.INPUT_REGISTER},
         'Min. total nominal reactive power': {
@@ -165,7 +165,7 @@ class SungrowLogger(Server):
             'count': 1,
             'dtype': DataType.I16,
             'multiplier': 1,
-            'unit': 'kVar',
+            'unit': 'kvar',
             'device_class': DeviceClass.REACTIVE_POWER,
             'register_type': RegisterTypes.INPUT_REGISTER},
         'Inverter preset total active power': {
@@ -181,7 +181,7 @@ class SungrowLogger(Server):
             'count': 1,
             'dtype': DataType.I16,
             'multiplier': 1,
-            'unit': 'kVar',
+            'unit': 'kvar',
             'device_class': DeviceClass.REACTIVE_POWER,
             'register_type': RegisterTypes.INPUT_REGISTER},
         'Logger On/Off state': {
@@ -292,7 +292,7 @@ class SungrowLogger(Server):
             'dtype': DataType.U16,
             'multiplier': 1,
             'unit': 'Set',
-            'device_class': DeviceClass.ENUM,
+            'device_class': None,
             'register_type': RegisterTypes.INPUT_REGISTER},
         'Off-grid devices': {
             'addr': 8097,
@@ -300,7 +300,7 @@ class SungrowLogger(Server):
             'dtype': DataType.U16,
             'multiplier': 1,
             'unit': 'Set',
-            'device_class': DeviceClass.ENUM,
+            'device_class': None,
             'register_type': RegisterTypes.INPUT_REGISTER},
         'Monthly yield of array': {
             'addr': 8098,
@@ -411,7 +411,7 @@ class SungrowLogger(Server):
         #     'count': 2,
         #     'dtype': DataType.I32,
         #     'multiplier': 0.1,
-        #     'unit': 'kVar',
+        #     'unit': 'kvar',
         #     'device_class': DeviceClass.REACTIVE_POWER,
         #     'register_type': RegisterTypes.HOLDING_REGISTER
         # },

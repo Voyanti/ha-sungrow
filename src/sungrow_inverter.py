@@ -140,7 +140,7 @@ class SungrowInverter(Server):
 
         # Power measurements
         'Nominal Reactive Power': {'addr': 5049, 'count': 1, 'dtype': DataType.U16, 'multiplier': 0.1, 'unit': 'kVar', 'device_class': DeviceClass.REACTIVE_POWER, 'register_type': RegisterTypes.INPUT_REGISTER},
-        'Array Insulation Resistance': {'addr': 5071, 'count': 1, 'dtype': DataType.U16, 'multiplier': 1, 'unit': 'kΩ',  'device_class': DeviceClass.ENUM, 'register_type': RegisterTypes.INPUT_REGISTER},
+        'Array Insulation Resistance': {'addr': 5071, 'count': 1, 'dtype': DataType.U16, 'multiplier': 1, 'unit': 'kΩ',  'device_class': None, 'register_type': RegisterTypes.INPUT_REGISTER},
         'Active Power Regulation Setpoint': {'addr': 5077, 'count': 2, 'dtype': DataType.U32, 'multiplier': 1, 'unit': 'W', 'device_class': DeviceClass.POWER, 'register_type': RegisterTypes.INPUT_REGISTER},
         'Reactive Power Regulation Setpoint': {'addr': 5079, 'count': 2, 'dtype': DataType.I32, 'multiplier': 1, 'unit': 'Var', 'device_class': DeviceClass.REACTIVE_POWER, 'register_type': RegisterTypes.INPUT_REGISTER},
 
