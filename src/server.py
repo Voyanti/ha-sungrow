@@ -188,8 +188,11 @@ class Server(ABC):
         if multiplier != 1:
             val *= multiplier
         if device_class is not None and isinstance(val, int) or isinstance(val, float):
-            val = round(
-                val, device_class_to_rounding.get(device_class, 2))
+            if unit and unit.startswith('k'): # starts with kilo
+                val = round(val, 1) # temp. add more precision to fields in kilo- watt/var/va
+            else:
+                val = round(
+                    val, device_class_to_rounding.get(device_class, 2))
         logger.debug(f"Decoded Value = {val} {unit}")
 
         return val
