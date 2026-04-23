@@ -49,6 +49,8 @@ class AppOptions:
     servers: list[Union[SungrowMeterOptions, ServerOptions]]
     clients: list[Union[ModbusRTUOptions, ModbusTCPOptions]]
 
+    modbus_client_connect_retries: int
+
     pause_interval_seconds: int
 
     midnight_sleep_enabled: bool

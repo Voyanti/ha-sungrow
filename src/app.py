@@ -154,13 +154,13 @@ class App:
 
     def connect(self) -> None:
         for client in self.clients:
-            client.connect()
+            client.connect(num_retries=self.OPTIONS.modbus_client_connect_retries)
 
         for server in self.servers:
             server.connect()
 
         # Setup MQTT Client
-        logger.info(f"Connecting to MQTT broker")
+        logger.info("Connecting to MQTT broker")
         self.mqtt_client = MqttClient(self.OPTIONS)
         self.mqtt_client.connect_timeout = 20
 

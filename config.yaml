@@ -1,5 +1,5 @@
 name: "Sungrow Inverter"
-version: "0.4.82"
+version: "0.4.83"
 image: ghcr.io/voyanti/ha-sungrow
 slug: "ha-sungrow"
 description: "Sungrow Inverter Prebuilt"
@@ -39,6 +39,7 @@ options:
       host: "10.0.0.15"
       port: 502
   pause_interval_seconds: 0.5
+  modbus_client_connect_retries: 50
   midnight_sleep_enabled: true
   midnight_sleep_wakeup_after: 10
   mqtt_host: "localhost"
@@ -70,6 +71,7 @@ schema:
       parity: bool?
       stopbits: int?
   pause_interval_seconds: int
+  modbus_client_connect_retries: int
   midnight_sleep_enabled: bool
   midnight_sleep_wakeup_after: int
   mqtt_host: str
