@@ -10,9 +10,6 @@ url: "https://github.com/heinrich321/voyanti-sungrow/"
 arch:
   - aarch64
   - amd64
-  - armhf
-  - armv7
-  - i386
 options:
   servers:
     - name: "SG1"
