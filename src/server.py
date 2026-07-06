@@ -4,10 +4,17 @@ from typing import Any, Optional, TypedDict
 
 from .helpers import slugify, with_retries
 from .enums import DataType, HAEntityType, RegisterTypes, Parameter, DeviceClass, WriteParameter
-from .client import Client, ModbusException
+from pymodbus import ModbusException
+from .client import Client
 from .options import ServerOptions
 
 logger = logging.getLogger(__name__)
+
+
+class ReadException(Exception):
+    """Raised when the device returns a Modbus error-code response
+    (result.isError()) — a device/config error, not a connection failure."""
+    pass
 
 
 class Server(ABC):
@@ -188,7 +195,7 @@ class Server(ABC):
 
         if result.isError():
             self.connected_client._handle_error_response(result)
-            raise Exception(f"Error reading register {parameter_name}")
+            raise ReadException(f"Error reading register {parameter_name}")
 
         logger.debug(f"Raw register begin value: {result.registers[0]}")
         val = self._decoded(result.registers, dtype)
