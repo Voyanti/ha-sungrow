@@ -147,6 +147,18 @@ class DeviceClass(Enum):
     WIND_SPEED = "wind_speed"
 
 
+device_class_to_rounding: dict[DeviceClass, int] = {
+        DeviceClass.REACTIVE_POWER: 0,
+        DeviceClass.ENERGY: 1,
+        DeviceClass.FREQUENCY: 1,
+        DeviceClass.POWER_FACTOR: 1,
+        DeviceClass.APPARENT_POWER: 0,
+        DeviceClass.CURRENT: 1,
+        DeviceClass.VOLTAGE: 0,
+        DeviceClass.POWER: 0,
+    }
+
+
 # Exact valid units per HA docs (empty set => unitless/text)
 VALID_UNITS: Dict[DeviceClass, FrozenSet[str]] = {
     DeviceClass.DATE: frozenset(),

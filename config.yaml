@@ -35,6 +35,11 @@ options:
       type: "TCP"
       host: "10.0.0.15"
       port: 502
+  rounding_overrides:
+    - ha_device_class: power
+      n_decimals: 0
+    - ha_device_class: energy
+      n_decimals: 1
   pause_interval_seconds: 0.5
   modbus_client_connect_retries: 50
   midnight_sleep_enabled: true
@@ -67,6 +72,9 @@ schema:
       bytesize: int?
       parity: bool?
       stopbits: int?
+  rounding_overrides:
+    - ha_device_class: str
+      n_decimals: int(0,6)
   pause_interval_seconds: int
   modbus_client_connect_retries: int
   midnight_sleep_enabled: bool

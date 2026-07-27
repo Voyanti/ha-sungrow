@@ -3,7 +3,7 @@ import logging
 from typing import Any, Optional, TypedDict
 
 from .helpers import slugify, with_retries
-from .enums import DataType, HAEntityType, RegisterTypes, Parameter, DeviceClass, WriteParameter
+from .enums import DataType, HAEntityType, RegisterTypes, Parameter, DeviceClass, WriteParameter, device_class_to_rounding
 from pymodbus import ModbusException
 from .client import Client
 from .options import ServerOptions
@@ -30,6 +30,10 @@ class Server(ABC):
         self.serial: str = serial
         self.modbus_id: int = modbus_id
         self.connected_client: Client = connected_client
+
+        # Decimals to round decoded values to, per device class. Overridable from
+        # add-on options; see loader.build_rounding_map.
+        self.rounding: dict[DeviceClass, int] = dict(device_class_to_rounding)
 
         self._model: str = "unknown"
 
@@ -161,16 +165,6 @@ class Server(ABC):
             -----------
                 - parameter_name: str: slave parameter name string as defined in register map
         """
-        device_class_to_rounding: dict[DeviceClass, int] = {    # TODO define in deviceClass type
-            DeviceClass.REACTIVE_POWER: 0,
-            DeviceClass.ENERGY: 1,
-            DeviceClass.FREQUENCY: 1,
-            DeviceClass.POWER_FACTOR: 1,
-            DeviceClass.APPARENT_POWER: 0, 
-            DeviceClass.CURRENT: 1,
-            DeviceClass.VOLTAGE: 0,
-            DeviceClass.POWER: 0
-        }
         param = self.parameters.get(parameter_name, self.write_parameters.get(parameter_name))  # type: ignore
         if param is None:
             logger.info(f"No parameter {parameter_name=} for server {self.name} defined. Attempt to read.")
@@ -206,7 +200,7 @@ class Server(ABC):
                 val = round(val, 1) # temp. add more precision to fields in kilo- watt/var/va
             else:
                 val = round(
-                    val, device_class_to_rounding.get(device_class, 2))
+                    val, self.rounding.get(device_class, 2))
         logger.debug(f"Decoded Value = {val} {unit}")
 
         return val
@@ -275,7 +269,8 @@ class Server(ABC):
     def from_ServerOptions(
         cls,
         opts: ServerOptions,
-        clients: list[Client]
+        clients: list[Client],
+        rounding: Optional[dict[DeviceClass, int]] = None
     ):
         """
         Initialises modbus_mqtt.server.Server from modbus_mqtt.loader.ServerOptions object
@@ -284,6 +279,8 @@ class Server(ABC):
         -----------
             - sr_options: modbus_mqtt.loader.ServerOptions - options as read from config json
             - clients: list[modbus_mqtt.client.Client] - list of all TCP/Serial clients connected to machine
+            - rounding: decimals per device class, as merged by loader.build_rounding_map.
+                        None keeps the enums.device_class_to_rounding defaults.
         """
         name = opts.name
         serial = opts.serialnum
@@ -299,4 +296,7 @@ class Server(ABC):
             )
         connected_client = clients[idx]
 
-        return cls(name, serial, modbus_id, connected_client)
+        server = cls(name, serial, modbus_id, connected_client)
+        if rounding is not None:
+            server.rounding = rounding
+        return server

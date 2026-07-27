@@ -278,7 +278,8 @@ class AcrelMeter(Server):
     def from_ServerOptions(
         cls,
         opts: ServerOptions | SungrowMeterOptions, # opts will be SungrowMeterOptions if config has the ratios
-        clients: list[Client]
+        clients: list[Client],
+        rounding: Optional[dict[DeviceClass, int]] = None
     ):
         name = opts.name
         serial = opts.serialnum
@@ -313,7 +314,7 @@ class AcrelMeter(Server):
             )
 
         # Pass extracted ratios (or None) as keyword arguments to the constructor
-        return cls(
+        server = cls(
             name,
             serial,
             modbus_id,
@@ -322,6 +323,9 @@ class AcrelMeter(Server):
             CT_RATIO=ct_ratio_val,  # Pass as kwargs
             meter_reverse_connection=meter_reverse_connection
         )
+        if rounding is not None:
+            server.rounding = rounding
+        return server
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args)
