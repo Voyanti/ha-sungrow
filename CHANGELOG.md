@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.3
+
+### Fixed
+- Reconnecting to a Sungrow inverter always raised `KeyError` and never succeeded. `setup_valid_registers_for_model()` runs on the initial connect *and* on every reconnect, but removed model-unsupported registers with a bare `dict.pop()`, so the second call failed on registers the first had already removed. Register setup is now idempotent.
+
+  On 0.5.1 this killed the addon outright: the reconnect sweep caught only `ConnectionError`, so the `KeyError` escaped the read loop and the exit handler published a retained `offline` to the bridge availability topic. Because every entity is discovered with `availability_mode: all` against that topic, one inverter blip took *all* of the addon's entities unavailable at once — inverters, meter and logger — and they stayed that way until the addon next started cleanly. 0.5.2's broad `except` in the sweep stopped the crash but left the `KeyError`, so the device instead stayed permanently in the disconnected list. This release fixes the cause.
+
 ## 0.5.2
 
 ### Fixed

@@ -780,7 +780,12 @@ class SungrowInverter(Server):
             raise ValueError(f"Inverter model not set. Cannot setup valid registers. {self.serial=}, {self.name=}")
 
         for param, models in self.limited_params.items():
-            if self.model not in models: self._parameters.pop(param)
+            # pop(default) not pop(): connect() -> setup_valid_registers_for_model()
+            # runs again on every reconnect, and the first call already removed
+            # these. A bare pop raised KeyError on the second call, which in 0.5.1
+            # escaped the reconnect sweep and killed the addon — taking every
+            # entity unavailable via the bridge Last Will, not just this device.
+            if self.model not in models: self._parameters.pop(param, None)
 
         # select the available number of mppt registers for the specific model
         mppt_registers: list[dict] = self.MPPT_parameters[:self.model_info["mppt"]]
