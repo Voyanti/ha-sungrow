@@ -11,3 +11,5 @@ schema.yaml
 .devcontainer/venv
 venv
 pdfs/
+.env
+.DS_Store

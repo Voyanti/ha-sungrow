@@ -792,7 +792,9 @@ class SungrowInverter(Server):
         for item in mppt_registers: self._parameters.update(item)
 
         # show line / phase voltage depending on configuration
-        config_id = self.read_registers("Output Type")  # TODO not supposed to change during operation, but does for the site
+        # TODO: not supposed to change during operation, but does on at least one
+        # deployed unit, so it is read at startup rather than assumed constant.
+        config_id = self.read_registers("Output Type")
         self._parameters.update(self.phase_line_voltage[int(config_id)])
 
     def verify_serialnum(self, serialnum_name_in_definition:str="Serial Number") -> bool:
