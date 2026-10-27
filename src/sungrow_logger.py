@@ -65,6 +65,24 @@ class SungrowLogger(Server):
             'device_class': DeviceClass.ENUM,
             'remarks': 'Currently only the low 16 bits are used. Logger1000 only uses 8 bits, Logger3000 uses 16 bits, and Logger4000 uses 16 bits',
             'register_type': RegisterTypes.INPUT_REGISTER},
+        'PT100-1 temperature': {
+            'addr': 8027,
+            'count': 1,
+            'dtype': DataType.I16,
+            'multiplier': 0.1,
+            'unit': '°C',
+            'device_class': DeviceClass.TEMPERATURE,
+            'remarks': 'Logger3000/Logger4000 only; Logger1000 has no PT100 input',
+            'register_type': RegisterTypes.INPUT_REGISTER},
+        'PT100-2 temperature': {
+            'addr': 8028,
+            'count': 1,
+            'dtype': DataType.I16,
+            'multiplier': 0.1,
+            'unit': '°C',
+            'device_class': DeviceClass.TEMPERATURE,
+            'remarks': 'Logger3000/Logger4000 only; Logger1000 has no PT100 input',
+            'register_type': RegisterTypes.INPUT_REGISTER},
         'ADC1 voltage': {
             'addr': 8029,
             'count': 1,
@@ -443,7 +461,7 @@ class SungrowLogger(Server):
 
         # self.model = "Logger 1000x"              # only 1000b model
         self._manufacturer = "Sungrow"
-        self._parameters = self.logger_input_registers
+        self._parameters = self.logger_input_registers.copy()
         self.serial = 'unknown'
 
         self._supported_models = ("Logger1000") #  "Logger3000", "Logger4000")
@@ -486,7 +504,10 @@ class SungrowLogger(Server):
 
     
     def setup_valid_registers_for_model(self):
-        # only support logger 1000 for now
+        # Idempotent: runs on every (re)connect, so pop with a default.
+        if self.model not in ("Logger3000", "Logger4000"):
+            self._parameters.pop('PT100-1 temperature', None)
+            self._parameters.pop('PT100-2 temperature', None)
         return
     
     def is_available(self):

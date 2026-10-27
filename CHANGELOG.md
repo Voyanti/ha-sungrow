@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.4
+
+### Added
+- Logger PT100 temperature inputs `PT100-1 temperature` (8027) and `PT100-2 temperature` (8028), S16 at 0.1 °C. Per the logger protocol these exist only on Logger3000/Logger4000, so `setup_valid_registers_for_model()` drops them on any other model. The add-on's `supported_models` is still Logger1000-only, so these stay inert until a Logger3000/4000 is enabled.
+
+### Fixed
+- `SungrowLogger._parameters` aliased the class-level `logger_input_registers` dict instead of copying it, so any per-model register removal would have mutated the map shared by every logger instance. Now a copy, matching `_write_parameters`.
+
 ## 0.5.3
 
 ### Fixed
