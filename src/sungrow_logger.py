@@ -443,7 +443,7 @@ class SungrowLogger(Server):
 
         # self.model = "Logger 1000x"              # only 1000b model
         self._manufacturer = "Sungrow"
-        self._parameters = self.logger_input_registers
+        self._parameters = self.logger_input_registers.copy()
         self.serial = 'unknown'
 
         self._supported_models = ("Logger1000") #  "Logger3000", "Logger4000")
